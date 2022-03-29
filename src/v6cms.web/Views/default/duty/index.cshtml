@@ -1,0 +1,155 @@
+@model IEnumerable<duty_entity>
+@{
+    ViewData["Title"] = "值班表";
+    var today = DateTime.Today;
+    var last_month = today.AddMonths(-1).ToString("yyyy-MM");
+    var this_month = today.ToString("yyyy-MM");
+    var next_month = today.AddMonths(1).ToString("yyyy-MM");
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban">
+    <div class="container clearfix">
+        <div class="m2itmName m2itmName_icon2">
+        </div>
+        <p class="wow fadeInUp">
+
+        </p>
+    </div>
+</div>
+<div class="clearfix navbar-clear"></div>
+
+<div class="container">
+    <button type="button" class="btn btn-primary" onclick="location.href='/duty?month=@last_month';">上月</button>
+    <button type="button" class="btn btn-primary" onclick="location.href='/duty?month=@this_month';">本月</button>
+    <button type="button" class="btn btn-primary" onclick="location.href='/duty?month=@next_month';">下月</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.date)
+                </th>
+                <th>
+                    @ViewData["column_B"]
+                </th>
+                <th>
+                    @ViewData["column_C"]
+                </th>
+                <th>
+                    @ViewData["column_D"]
+                </th>
+                <th>
+                    @ViewData["column_E"]
+                </th>
+                <th>
+                    @ViewData["column_F"]
+                </th>
+                <th>
+                    @ViewData["column_G"]
+                </th>
+                <th>
+                    @ViewData["column_H"]
+                </th>
+                @if (ViewData["column_I"] != null)
+                {
+                    <th>
+                        @ViewData["column_I"]
+                    </th>
+                }
+                @if (ViewData["column_J"] != null)
+                {
+                    <th>
+                        @ViewData["column_J"]
+                    </th>
+                }
+                @if (ViewData["column_K"] != null)
+                {
+                    <th>
+                        @ViewData["column_K"]
+                    </th>
+                }
+                @if (ViewData["column_L"] != null)
+                {
+                    <th>
+                        @ViewData["column_L"]
+                    </th>
+                }
+                @if (ViewData["column_M"] != null)
+                {
+                    <th>
+                        @ViewData["column_M"]
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="15" style="text-align: center;">
+                        <div class="layui-inline">--没有记录--</div>
+                    </td>
+                </tr>
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.date.ToString("yyyy-MM-dd")
+                        <div>@V6.ConvertDateToZHWeek(item.date)</div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_B)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_C)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_D)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_E)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_F)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_G)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.column_H)
+                    </td>
+                    @if (ViewData["column_I"] != null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column_I)
+                        </td>
+                    }
+                    @if (ViewData["column_J"] != null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column_J)
+                        </td>
+                    }
+                    @if (ViewData["column_K"] != null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column_K)
+                        </td>
+                    }
+                    @if (ViewData["column_L"] != null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column_L)
+                        </td>
+                    }
+                    @if (ViewData["column_M"] != null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column_M)
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

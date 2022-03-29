@@ -1,0 +1,214 @@
+﻿@inject IDataService _service
+@{
+    var site_config = _service.get_site_config();//网站配置
+}
+<div class="index">
+    <div class="sousuo">
+        <form name="formsearch" action="/search">
+            <div class="sousuo-kh">全球酒搜索</div>
+            <div class="sousuo-body">
+                <input name="keyword" type="text" class="sousuo-keyword" id="search-keyword" placeholder="在这里搜索..." />
+                <button type="submit" class="search-submit">搜索</button>
+            </div>
+        </form>
+    </div><!-- //search -->
+    <div class="w1000 center clear">
+        <div class="pleft_1 mt1">
+            <div class="bignews">
+                <!--头条-->
+                <div class="onenews">
+                    @foreach (var item in _service.get_article_list(take: 1, is_hot: true))
+                    {
+                        string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                        <h2><a href="@url" title="@item.title">@item.title.CutStr(20)</a></h2>
+                        <p>@item.summary ...<a href="@url">[查看全文]</a></p>
+                    }
+                </div>
+                <!-- /onenews -->
+                <div class="d1">
+                    @foreach (var item in _service.get_article_list(take: 3, skip: 1, is_hot: true))
+                    {
+                        string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                        <div class='d1arc'><a href="@url" title="@item.title">@item.title.CutStr(22)</a></div>
+                    }
+                </div>
+                <!--/头条-->
+                <div class='newarticle'>最新文章</div>
+                <ul class="c2 ico1">
+                    <!--最新文档-->
+                    @foreach (var item in _service.get_article_list(take: 7, is_hot: false))
+                    {
+                        string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                        <li><a href="@url" title="@item.title">@item.title.CutStr(22)</a></li>
+                    }
+                    <!--//最新文档-->
+                </ul>
+            </div>
+            <!-- /bignews -->
+            <div class="flashnews">
+                <!-- size: 382px * 200px -->
+                <div class="demo">
+                    <a class="control prev"></a>
+                    <a class="control next abs"></a><!--自定义按钮，移动端可不写-->
+                    <div class="slider">
+                        <!--主体结构，请用此类名调用插件，此类名可自定义-->
+                        <ul>
+                            @foreach (var item in _service.get_article_list(take: 5, is_pic: true))
+                            {
+                                string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                                <li><a href="@url" alt="@item.title"><img src="@item.pic" /></a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                <script src="/templates/dedecms/images/js/YuxiSlider.jQuery.min.js"></script>
+                <script>
+                    $(".slider").YuxiSlider({
+                        width:382, //容器宽度
+                        height:200, //容器高度
+                        control:$('.control'), //绑定控制按钮
+                        during:4000, //间隔4秒自动滑动
+                        speed:800, //移动速度0.8秒
+                        mousewheel:true, //是否开启鼠标滚轮控制
+                        direkey:true //是否开启左右箭头方向控制
+                    });
+                </script>
+            </div>
+            <!-- /flashnews -->
+            <div class="latestnews">
+                <dl class="tbox light">
+                    <dt class="light"><strong>特别推荐</strong></dt>
+                    <dd class="light">
+                        <ul class="d2 ico2">
+                            @foreach (var item in _service.get_article_list(take: 6, is_recommend: true))
+                            {
+                                string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                                <li><span>@item.publish_time.ToString("MM-dd")</span><a href="@url" title="@item.title">@item.title.CutStr(22)</a></li>
+                            }
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+            <!-- /latestnews -->
+        </div>
+        <!-- /pleft -->
+        <div class="pright_1 mt1">
+            <div class="commend">
+                <dl class="tbox light">
+                    <dt class='light'> <strong>互动中心</strong></dt>
+                    <dd class='light'>
+                        <ul class="f1">
+                            @foreach (var item in _service.get_article_list(take: 8, orderby: "views"))
+                            {
+                                string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                                <li>
+                                    <a href="@url" title="@item.title">@item.title.CutStr(15)</a>
+                                    <span><small>点击：</small>@item.views</span>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="picnews">
+            <dl class="tbox light">
+                <dt class='light'><strong>图文资讯</strong></dt>
+                <dd class='light'>
+                    <div class="infiniteCarousel">
+                        <div class="wrapper">
+                            <ul id='imgscroll'>
+                                @foreach (var item in _service.get_article_list(take: 6, is_pic: true))
+                                {
+                                    string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                                    <li>
+                                        <a href="@url" title="@item.title">
+                                            <img src="@item.pic" style="max-width: 143px;max-height: 143px;" alt="@item.title" />
+                                            <span class="title">@item.title.CutStr(12)</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+        <!-- /picnews -->
+        <div class="pleft_1">
+            <div class="listbox">
+                @foreach (var column in _service.get_column_list(new int[] { 80, 86, 87, 79 }))
+                {
+                    <dl class="tbox">
+                        <dt>
+                            <strong><a href="@column.id.to_route_url(column.route_value)">@column.column_name</a></strong>
+                            <span class="more"><a href="@column.id.to_route_url(column.route_value)">更多...</a></span>
+                        </dt>
+                        <dd>
+                            <ul class="d1 ico3">
+                                @foreach (var item in _service.get_article_list(column.id, 8))
+                                {
+                                    <li>
+                                        <span>@item.publish_time.ToString("MM-dd")</span><a href="@item.id.to_html_url(item.article_snow_id,item.publish_time, item.column.html_path_rule,item.column.list_option)"
+                                                                                    title="@item.title">@item.title</a>
+                                    </li>
+                                }
+                            </ul>
+                        </dd>
+                    </dl>
+                }
+            </div>
+            <!-- /listbox -->
+        </div>
+        <!-- /pleft -->
+        <div class="pright_1">
+            <!-- /usercenter -->
+            <div class="hot mt1">
+                <dl class="tbox light">
+                    <dt class='light'><strong>本月热点</strong></dt>
+                    <dd class='light'>
+                        <ul class="c1 ico2">
+                            @foreach (var item in _service.get_article_list(is_hot: true))
+                            {
+                                <li class='dotline'>
+                                    <a href="@item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option)"
+                                   title="@item.title">@item.title.CutStr(17)</a>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <!-- /pleft -->
+    </div>
+    <div class="flink w1000 center clear">
+        <dl class="tbox">
+            <dt>
+                <strong>友情链接</strong>
+                <span class="linklabel">
+                    @{
+                        var cate = _service.get_link_category_list(new int[] { 9 });
+                    }
+                    @foreach (var item in cate)
+                    {
+                        <a href="###" _for="flink_@item.id">@item.category_name</a>
+                    }
+                </span>
+                <span class="more"> </span>
+            </dt>
+            @foreach (var item in cate)
+            {
+                <dd id="flink_@item.id">
+                    <ul class="f5">
+                        @foreach (var link in _service.get_link_list(item.id))
+                        {
+                            <li><a href='@link.url' target='_blank'>@link.title</a></li>
+                        }
+                    </ul>
+                </dd>
+            }
+        </dl>
+    </div>
+</div>

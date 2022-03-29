@@ -1,0 +1,104 @@
+@model PagedList<advertisement_entity>
+@{
+    ViewData["Title"] = "广告管理";
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <a asp-action="create" class="layui-btn layui-btn-normal">添加广告</a>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ad_name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ad_type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.view_time_limit)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.text)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.pic)
+                    </th>
+                    <th>
+                        幻灯图片集合
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.end_time)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="9" style="text-align: center;">
+                            <div class="layui-inline">--没有记录--</div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ad_name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ad_type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.view_time_limit)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.text)
+                        </td>
+                        <td>
+                            <img src="@item.pic" style="max-width: 120px;max-height: 120px;" />
+                        </td>
+                        <td>
+                            @foreach (var pic in item.pic_list)
+                            {
+                                <img src="@pic.pic" style="max-width: 80px;max-height: 80px;" />
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.end_time)
+                        </td>
+                        <td style="text-align: right;">
+                            <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

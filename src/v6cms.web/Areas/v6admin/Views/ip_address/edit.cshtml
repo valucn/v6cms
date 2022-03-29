@@ -1,0 +1,56 @@
+﻿@model ip_address_entity
+@{
+    ViewData["Title"] = "修改IP地址";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">IP开始</label>
+                <div class="layui-input-block">
+                    <input asp-for="ip_start" lay-verify="required" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">IP结束</label>
+                <div class="layui-input-block">
+                    <input asp-for="ip_end" lay-verify="required" class="layui-input">
+                </div>
+            </div>
+
+            @{
+                var type_list = new List<SelectListItem>()
+            {
+            new SelectListItem() { Text = "IP白名单", Value = "IP白名单" },
+            new SelectListItem() { Text = "IP黑名单", Value = "IP黑名单"}
+            };
+            }
+            <div class="layui-form-item">
+                <label class="layui-form-label">栏目属性</label>
+                <div class="layui-input-block">
+                    <v6cms-radio asp-items="@type_list" asp-for="ip_type"></v6cms-radio>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input asp-for="remark" lay-verify="required" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

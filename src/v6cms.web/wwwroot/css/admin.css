@@ -1,0 +1,16 @@
+﻿.imgDiv {
+    display: inline-block;
+    position: relative;
+}
+
+    .imgDiv .delete {
+        opacity: 0.7; /*0~1的数字*/
+        background-color: #fff;
+        color: #000;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        padding-left: 3px;
+        width: 50px;
+        display: none;
+    }

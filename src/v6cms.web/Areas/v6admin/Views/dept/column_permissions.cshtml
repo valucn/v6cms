@@ -1,0 +1,58 @@
+@model dept_entity
+@{
+    ViewData["Title"] = "设置栏目权限";
+}
+@section header{
+}
+@section Scripts{
+<script src="~/js/xm-select.js"></script>
+<script>
+    $(function(){
+        $.ajax({
+            url:"/v6admin/api/column_api/get_list",
+            success: function(data){
+                var demo1 = xmSelect.render({
+                    el: '#demo1',
+                    name: 'column_id_list',
+                    height: '380px',
+                    filterable: true,
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        expandedKeys: true,
+                    },
+                    data: data
+                });
+
+                demo1.setValue([ @Model.column_id_list ]);
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"] - @Model.dept_name</div>
+    <div class="layui-card-body">
+        <form method="post" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章栏目</label>
+                <div class="layui-input-block">
+
+                    <div id="demo1" class="xm-select-demo"></div>
+
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

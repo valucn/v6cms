@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "网站栏目";
+}
+@section Scripts{
+<script>
+    layui.config({
+        base: '/layuiadmin/lib/extend/'
+    }).use(['treeTable'],function(){
+        var treeTable = layui.treeTable;
+        treeTable.render({
+            elem: '#tree-table',// 必须
+            url: '/v6admin/column/get_json_list',
+            icon_key: 'column_name',// 必须
+            top_value: 0,
+            primary_key: 'id',
+            parent_key: 'parent_id',
+            hide_class: 'layui-hide',
+            icon: {
+                open: 'layui-icon layui-icon-triangle-d',
+                close: 'layui-icon layui-icon-triangle-r',
+                left: 16,
+            },
+            cols: [
+                { key: 'id', title: 'id' },
+                { key: 'column_name', title: '栏目名称', width: '200px' },
+                { key: 'column_name_abbr', title: '简称' },
+                { key: 'route_value', title: '路由' },
+                { key: 'is_need_review', title: '需审核',
+                    template: function(item){
+                        var str = '否';
+                        if(item.is_need_review == true){
+                            str = '是';
+                        }
+                        return str;
+                    }
+                },
+                { key: 'list_option', title: '列表选项',
+                    template: function(item){
+                        var str = '链接到默认页';
+                        if(item.list_option == 1){
+                            str = '链接到列表第一页';
+                        }
+                        else if(item.list_option == 2){
+                            str = '使用动态页';
+                        }
+                        return str;
+                    }
+                },
+                { key: 'column_attribute', title: '栏目属性',
+                    //栏目属性：最终列表栏目=0, 栏目封面=1, 频道封面=2, 外部链接=3
+                    template: function(item){
+                        var str = '最终列表栏目';
+                        if(item.column_attribute == 1){
+                            str = '栏目封面';
+                        }
+                        else if(item.column_attribute == 2){
+                            str = '频道封面';
+                        }
+                        else if(item.column_attribute == 3){
+                            str = '外部链接';
+                        }
+                        return str;
+                    }
+                },
+                { key: 'sort_rank', title: '排序' },
+                //{ key: 'score', title: '分值' },
+                //{ key: 'score_province', title: '省' },
+                //{ key: 'score_city', title: '市' },
+                //{ key: 'score_branch', title: '分局' },
+                { key: 'is_show_nav', title: '导航显示',
+                    template: function(item){
+                        var str = '否';
+                        if(item.is_show_nav == true){
+                            str = '是';
+                        }
+                        return str;
+                    }
+                },
+                { key: 'id', title: '', width: '260px', align: 'right',
+                    template: function(item){
+                        var str = '<a href="/v6admin/column/edit/'+item.id+'">修改</a> | ';
+                        str += '<a href="/v6admin/column/edit_content/'+item.id+'">修改栏目内容</a> | ';
+                        //str += '<a href="/v6admin/column/create?parent_id='+item.id+'">添加子栏目</a> | ';
+                        str += '<a href="/v6admin/column/delete/'+item.id+'" onclick="return confirm(\'确认删除吗？\');">删除</a>';
+                        return str;
+                    }
+                }
+            ],
+            checked: {
+                key: 'id',
+                data: [0,1,4,10,11,5,2,6,7,3,8,9],
+            },
+            is_click_icon: false,
+            is_checkbox: false,
+            is_cache: true,
+            end: function(e){}
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <a asp-action="create" class="layui-btn layui-btn-normal">添加根栏目</a>
+        <table class="layui-table layui-form treeTable" id="tree-table"></table>
+    </div>
+</div>

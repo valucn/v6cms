@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - v6cms内容管理系统</title>
+    <link rel="stylesheet" href="~/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="~/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_page.css" />
+    <link rel="stylesheet" href="~/css/admin.css?ver=1.1" />
+    @RenderSection("header", required: false)
+</head>
+
+<body>
+    <div class="layui-fluid">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

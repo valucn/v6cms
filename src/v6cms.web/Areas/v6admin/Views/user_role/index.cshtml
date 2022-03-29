@@ -1,0 +1,76 @@
+@model PagedList<user_role_entity>
+@{
+    ViewData["Title"] = "角色管理";
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <a asp-action="create" class="layui-btn layui-btn-normal">添加角色</a>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.role_name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.data_range)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.is_need_review)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">--没有记录--</td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.role_name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.data_range)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_need_review)
+                        </td>
+                        <td align="right">
+                            <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            <a asp-action="set_permissions" asp-route-id="@item.id">设置权限</a> |
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,111 @@
+﻿@model code_generate_entity
+@{
+    ViewData["Title"] = "修改生成配置";
+    var columns = ViewData["columns"] as List<table_column_entity>;
+}
+<div class="card">
+    <div class="card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#base_info" data-toggle="tab">基本信息</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#column_info" data-toggle="tab">字段信息</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#generate_info" data-toggle="tab">生成信息</a>
+            </li>
+        </ul>
+        <p></p>
+        <form asp-action="edit">
+            <input asp-for="create_time" type="hidden" />
+            <div class="tab-content">
+                <div id="base_info" class="tab-pane">
+                    <div class="row">
+                        <div class="col">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="id" />
+                            <div class="form-group">
+                                <label asp-for="table_name" class="control-label"></label>
+                                <input asp-for="table_name" class="form-control" />
+                                <span asp-validation-for="table_name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="table_desc" class="control-label"></label>
+                                <input asp-for="table_desc" class="form-control" />
+                                <span asp-validation-for="table_desc" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="model_name" class="control-label"></label>
+                                <input asp-for="model_name" class="form-control" />
+                                <span asp-validation-for="model_name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="business_name" class="control-label"></label>
+                                <input asp-for="business_name" class="form-control" />
+                                <span asp-validation-for="business_name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="function_name" class="control-label"></label>
+                                <input asp-for="function_name" class="form-control" />
+                                <span asp-validation-for="function_name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="remark" class="control-label"></label>
+                                <input asp-for="remark" class="form-control" />
+                                <span asp-validation-for="remark" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="column_info" class="tab-pane active">
+                    <table class="table">
+                        <tr>
+                            <th>字段列表</th>
+                            <th>字段描述</th>
+                            <th>数据类型</th>
+                            <th>.net类型</th>
+                            <th>主键</th>
+                            <th>标识</th>
+                            <th>允许空</th>
+                        </tr>
+                        @foreach (var item in columns)
+                        {
+                            <tr>
+                                <td>@item.column_name</td>
+                                <td>@item.column_desc</td>
+                                <td>@item.data_type</td>
+                                <td>@item.dotnet_type</td>
+                                <td>@item.is_pk</td>
+                                <td>@item.is_identity</td>
+                                <td>@item.is_nullable</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div id="generate_info" class="tab-pane">
+                    <h2>sss</h2>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="保存" class="btn btn-primary" />
+                <a asp-action="index" class="btn btn-outline-primary">返回到列表</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

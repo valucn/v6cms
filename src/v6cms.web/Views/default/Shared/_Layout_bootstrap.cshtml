@@ -1,0 +1,84 @@
+﻿@inject data_service _service
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - v6cms内容管理系统</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="/lib/bootstrap-select/1.13.14/dist/css/bootstrap-select.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("header", required: false)
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                v6cms内容管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    @{
+                        var nav = await _service.get_column_nav();
+                        foreach (var item in nav)
+                        {
+                            string url;
+                            if (string.IsNullOrEmpty(item.route_value))
+                            {
+                                url = $"/column/article_list/{@item.id}";
+                            }
+                            else
+                            {
+                                url = $"/{item.route_value}";
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" href="@url" target="@item.target">@item.column_name</a>
+                            </li>
+                        }
+                    }
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            更多查询
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/query/unit_kind">单位性质</a>
+                            <a class="dropdown-item" href="/query/pre_approve">前置审批或专项内容</a>
+                            <a class="dropdown-item" href="/query/site_access_mode">网站接入方式</a>
+                            <a class="dropdown-item" href="/query/area_code">省市县代码</a>
+                            <a class="dropdown-item" href="/query/server_local">服务器放置地</a>
+                            <a class="dropdown-item" href="/query/ip_allocation">IP报备单位名称</a>
+                            <a class="dropdown-item" href="/query/unit_category">单位所属分类</a>
+                            <a class="dropdown-item" href="/query/industry_category">行业分类</a>
+                            <a class="dropdown-item" href="/query/server_content">网站服务内容</a>
+                            <a class="dropdown-item" href="/query/credentials_category">证件类型</a>
+                            <a class="dropdown-item" href="/query/domain_category">域名类型</a>
+                            <a class="dropdown-item" href="/query/administrative_level">行政级别</a>
+                            <a class="dropdown-item" href="/query/language">语种查询</a>
+                            <a class="dropdown-item" href="/batch">批量查询</a>
+                            <a class="dropdown-item" href="/analysis">备案数据分析</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    @RenderBody()
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+            &copy; 2022 - v6cms内容管理系统 - <a href="/v6admin" target="_blank">后台管理</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

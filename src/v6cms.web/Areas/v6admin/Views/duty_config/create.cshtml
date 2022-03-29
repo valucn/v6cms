@@ -1,0 +1,38 @@
+@model duty_config_entity
+@{
+    ViewData["Title"] = "添加值班表配置";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="create" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_no" class="layui-form-label">列序号</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_no" class="layui-input" />
+                        <span asp-validation-for="column_no" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="display_name" class="layui-form-label">显示名称</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="display_name" class="layui-input" />
+                        <span asp-validation-for="display_name" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

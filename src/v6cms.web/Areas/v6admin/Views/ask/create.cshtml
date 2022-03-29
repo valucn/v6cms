@@ -1,0 +1,65 @@
+@model ask_entity
+@{
+    ViewData["Title"] = "添加答疑";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="create" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="member_id" class="layui-form-label">会员id</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="member_id" class="layui-input" />
+                        <span asp-validation-for="member_id" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="title" class="layui-form-label">标题</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="title" class="layui-input" />
+                        <span asp-validation-for="title" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="content" class="layui-form-label">内容</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="content" class="layui-input" />
+                        <span asp-validation-for="content" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="create_time" class="layui-form-label">提问时间</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="create_time" class="layui-input" />
+                        <span asp-validation-for="create_time" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="ip" class="layui-form-label">IP</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="ip" class="layui-input" />
+                        <span asp-validation-for="ip" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

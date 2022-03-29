@@ -1,0 +1,137 @@
+@model advertisement_entity
+@{
+    ViewData["Title"] = "添加广告";
+}
+@section Scripts{
+<script>
+    layui.use(['upload'], function(){
+        var laydate = layui.laydate
+        ,upload = layui.upload;
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            ,type: 'datetime'
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test-upload-one'
+            ,url: '/v6admin/upload?module=advertisement'
+            ,before: function(obj){
+            //预读本地文件示例，不支持ie8
+            obj.preview(function(index, file, result){
+                $('#test-upload-one-img').attr('src', result); //图片链接（base64）
+            });
+            }
+            ,done: function(res){
+                //上传完毕
+                if(res.code == 200) {
+                    $("#pic").val(res.data.path);
+                    return layer.msg('上传成功');
+                }
+                else {
+                    return layer.msg('上传失败');
+                }
+            }
+            ,error: function(){
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="create" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="ad_name" class="layui-form-label">广告名称</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="ad_name" class="layui-input" lay-verify="required" />
+                        <span asp-validation-for="ad_name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">广告类型</label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<ad_type_enum>()" asp-for="ad_type">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="view_time_limit" class="layui-form-label">时间限制</label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<view_time_limit_enum>()" asp-for="view_time_limit">
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="end_time" class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="end_time" type="text" asp-format="{0:yyyy-MM-dd HH:mm:ss}" class="layui-input" autocomplete="off" />
+                        <span asp-validation-for="end_time" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="text" class="layui-form-label">广告文字</label>
+                    <div class="layui-input-block">
+                        <input asp-for="text" class="layui-input" />
+                        <span asp-validation-for="text" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="url" class="layui-form-label">链接地址</label>
+                    <div class="layui-input-block">
+                        <input asp-for="url" class="layui-input" />
+                        <span asp-validation-for="url" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">广告图片</label>
+                <div class="layui-input-block">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="test-upload-one">
+                            <i class="layui-icon">&#xe67c;</i>
+                            上传图片
+                        </button>
+                        <div class="layui-upload-list">
+                            <input type="hidden" asp-for="pic" />
+                            <img class="layui-upload-img" id="test-upload-one-img" style="max-width: 240px;max-height: 240px;" />
+                            <p id="test-upload-demoText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">幻灯图片集</label>
+                <div class="layui-input-block">
+                    <div class="layui-upload">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                            添加广告后再来修改
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

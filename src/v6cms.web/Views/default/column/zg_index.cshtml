@@ -1,0 +1,67 @@
+@inject data_service _service
+@{
+    int column_id = Html.get_route_int("id");
+    var column = await _service.get_column_details(column_id);
+    var zgdt_list = await _service.get_article_list(4, 6);
+    var tztb_list = await _service.get_article_list(5, 6);
+    var zgjs_list = await _service.get_article_list(35, 6);
+
+    ViewData["Title"] = column.column_name;
+}
+<div class="container">
+    <h3>这是xxxx政工模板（Views/Shared/zg_index.cshtml）@column.column_name</h3>
+    <hr />
+    <div class="row">
+        <div class="col">
+            <h4>政工动态</h4>
+            <a href="/zgzl/zgdt">更多....</a>
+            <table class="table table-bordered">
+                <tr>
+                    <th>标题</th>
+                    <th>创建时间</th>
+                </tr>
+                @foreach (var item in zgdt_list)
+                {
+                    <tr>
+                        <td>@item.title</td>
+                        <td>@item.create_time</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col">
+            <h4>通知通报</h4>
+            <a href="/zgzl/tztb">更多....</a>
+            <table class="table table-bordered">
+                <tr>
+                    <th>标题</th>
+                    <th>创建时间</th>
+                </tr>
+                @foreach (var item in tztb_list)
+                {
+                    <tr>
+                        <td>@item.title</td>
+                        <td>@item.create_time</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col">
+            <h4>政工局势</h4>
+            <a href="/zgzl/zgjs">更多....</a>
+            <table class="table table-bordered">
+                <tr>
+                    <th>标题</th>
+                    <th>创建时间</th>
+                </tr>
+                @foreach (var item in zgjs_list)
+                {
+                    <tr>
+                        <td><a href="/article/details/@item.id">@item.title</a></td>
+                        <td>@item.create_time.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

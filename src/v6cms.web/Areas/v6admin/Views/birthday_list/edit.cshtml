@@ -1,0 +1,52 @@
+@model birthday_list_entity
+@{
+    ViewData["Title"] = "修改生日名单";
+}
+@section Scripts{
+<script>
+    layui.use( function(){
+        var laydate = layui.laydate;
+
+        //日期选择器
+        laydate.render({
+          elem: '#date_of_birth'
+          //,type: 'date' //type 默认为 date，所以可不填
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="real_name" class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="real_name" class="layui-input" />
+                        <span asp-validation-for="real_name" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="date_of_birth" class="layui-form-label">生日</label>
+                    <div class="layui-input-inline">
+                        <input type="input" asp-for="date_of_birth" class="layui-input" value='@Model.date_of_birth.GetValueOrDefault().ToString("yyyy-MM-dd")' />
+                        <span asp-validation-for="date_of_birth" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

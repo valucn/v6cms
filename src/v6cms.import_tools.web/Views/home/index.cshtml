@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<form method="post">
+    <div>
+        dedecms栏目：
+        <select id="typeid" name="typeid" asp-items="@ViewBag.arctype_list">
+        </select>
+    </div>
+
+    <div>
+        v6cms栏目：
+        <select id="column_id" name="column_id" asp-items="@ViewBag.column_list">
+        </select>
+    </div>
+    <div><button type="submit">导入</button></div>
+</form>

@@ -1,0 +1,80 @@
+﻿@inject IDataService _service
+@{
+    string keyword = Context.Request.Query["keyword"];
+    int page = Html.get_query_int("page");
+
+    ViewData["Title"] = $"搜索 - {keyword}";
+
+    var data_list = new List<article_entity>().ToPagedList(page, 15);
+    if (!string.IsNullOrEmpty(keyword))
+    {
+        data_list = _service.search_article_page(keyword, page, 15);
+    }
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban" style="padding: 3px 0px 20px;">
+    <div class="container clearfix">
+        <p class="wow fadeInUp">
+            @ViewData["Title"]
+        </p>
+    </div>
+</div>
+<div class="clearfix navbar-clear"></div>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    标题
+                </th>
+                <th>
+                    发布时间
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (string.IsNullOrEmpty(keyword))
+            {
+                <tr>
+                    <td>
+                        请输入关键字查询
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @if (data_list.Count() == 0)
+                {
+                    <tr>
+                        <td>
+                            --没有找到记录--
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in data_list)
+                {
+                    string url = $"/article/details/{item.id}";
+                    <tr>
+                        <td>
+                            <a href="@url">@item.title.Replace(keyword, $"<b>{keyword}</b>")</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.create_time)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    @Html.Pager(data_list, new PagerOptions
+    {
+    PageIndexParameterName = "page",
+    TagName = "ul",
+    CssClass = "pagination justify-content-center",
+    CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+    DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+    PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+    PagerItemCssClass= "page-link",
+    Id = "bootstrappager"
+    })
+</div>

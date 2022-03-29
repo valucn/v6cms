@@ -1,0 +1,20 @@
+﻿@model unauthorized_model
+@{
+    ViewData["Title"] = Model.msg;
+}
+<div class="text-danger">
+    <ul>
+        <li>提示信息：@Model.msg</li>
+        @if (!string.IsNullOrWhiteSpace(Model.authority_code))
+        {
+            <li>权限代码：@Model.authority_code</li>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.jump_url))
+        {
+            <li>点击这里 <a href="@Model.jump_url">@Model.jump_url</a> 跳转</li>
+        }
+    </ul>
+</div>
+<p>
+    <a href="###" onclick="history.back();">[返回]</a>
+</p>

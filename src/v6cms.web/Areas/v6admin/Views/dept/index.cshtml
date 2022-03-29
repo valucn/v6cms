@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "部门管理";
+}
+@section Scripts{
+<script>
+    layui.config({
+        base: '/layuiadmin/lib/extend/'
+    }).use(['treeTable'],function(){
+        var treeTable = layui.treeTable;
+        treeTable.render({
+            elem: '#tree-table',// 必须
+            url: '/v6admin/dept/get_json_list',
+            icon_key: 'dept_name',// 必须
+            top_value: 0,
+            primary_key: 'id',
+            parent_key: 'parent_id',
+            hide_class: 'layui-hide',
+            icon: {
+                open: 'layui-icon layui-icon-triangle-d',
+                close: 'layui-icon layui-icon-triangle-r',
+                left: 16,
+            },
+            cols: [
+                { key: 'id', title: 'id' },
+                { key: 'dept_name', title: '栏目名称', width: '200px' },
+                { key: 'sort_rank', title: '排序' },
+                { key: 'in_rank_list', title: '参与排名' },
+                { key: 'id', title: '', width: '170px', 
+                    template: function(item){
+                        var str = '<a href="/v6admin/dept/edit/'+item.id+'">修改</a> | ';
+                        str += '<a href="/v6admin/dept/column_permissions/'+item.id+'">设置部门权限</a> | ';
+                        str += '<a href="/v6admin/dept/delete/'+item.id+'" onclick="return confirm(\'确认删除吗？\');">删除</a>';
+                        return str;
+                    }
+                }
+            ],
+            is_click_icon: false,
+            is_checkbox: false,
+            is_cache: true,
+            end: function(e){}
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <a asp-action="create" class="layui-btn layui-btn-normal">添加部门</a>
+        <table class="layui-table layui-form treeTable" id="tree-table"></table>
+    </div>
+</div>

@@ -1,0 +1,111 @@
+@model member_entity
+@{
+    ViewData["Title"] = "修改会员";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="username" class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="username" class="layui-input" readonly="readonly" />
+                        <span asp-validation-for="username" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="password" class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="password" class="layui-input" />
+                        <span asp-validation-for="password" class="text-danger"></span>
+                        <div class="layui-font-gray">留空则不修改密码</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="nick_name" class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="nick_name" class="layui-input" />
+                        <span asp-validation-for="nick_name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="company" class="layui-form-label">单位</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="company" class="layui-input" />
+                        <span asp-validation-for="company" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="avatar" class="layui-form-label">头像</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="avatar" class="layui-input" />
+                        <span asp-validation-for="avatar" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="mobile" class="layui-form-label">手机号码</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="mobile" class="layui-input" />
+                        <span asp-validation-for="mobile" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="card_id" class="layui-form-label">身份证号</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="card_id" class="layui-input" />
+                        <span asp-validation-for="card_id" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="is_lock" class="layui-form-label">是否锁定</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="is_lock" lay-skin="primary" />
+                        <span asp-validation-for="is_lock" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="member_level" class="layui-form-label">会员级别</label>
+                    <div class="layui-input-inline">
+                        <select asp-for="member_level" asp-items="@Html.GetEnumSelectList<member_level_enum>()">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="reg_time" class="layui-form-label">注册时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" asp-for="reg_time" class="layui-input" readonly="readonly" />
+                        <span asp-validation-for="reg_time" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="reg_ip" class="layui-form-label">注册IP</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="reg_ip" class="layui-input" readonly="readonly" />
+                        <span asp-validation-for="reg_ip" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+@model duty_entity
+@{
+    ViewData["Title"] = "修改值班";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="date" class="layui-form-label">日期</label>
+                    <div class="layui-input-inline">
+                        <input type="date" asp-for="date" class="layui-input" />
+                        <span asp-validation-for="date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_B" class="layui-form-label">@ViewData["column_B"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_B" class="layui-input" />
+                        <span asp-validation-for="column_B" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_C" class="layui-form-label">@ViewData["column_C"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_C" class="layui-input" />
+                        <span asp-validation-for="column_C" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_D" class="layui-form-label">@ViewData["column_D"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_D" class="layui-input" />
+                        <span asp-validation-for="column_D" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_E" class="layui-form-label">@ViewData["column_E"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_E" class="layui-input" />
+                        <span asp-validation-for="column_E" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_F" class="layui-form-label">@ViewData["column_F"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_F" class="layui-input" />
+                        <span asp-validation-for="column_F" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_G" class="layui-form-label">@ViewData["column_G"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_G" class="layui-input" />
+                        <span asp-validation-for="column_G" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_H" class="layui-form-label">@ViewData["column_H"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_H" class="layui-input" />
+                        <span asp-validation-for="column_H" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_I" class="layui-form-label">@ViewData["column_I"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_I" class="layui-input" />
+                        <span asp-validation-for="column_I" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_J" class="layui-form-label">@ViewData["column_J"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_J" class="layui-input" />
+                        <span asp-validation-for="column_J" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_K" class="layui-form-label">@ViewData["column_K"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_K" class="layui-input" />
+                        <span asp-validation-for="column_K" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="column_L" class="layui-form-label">@ViewData["column_L"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_L" class="layui-input" />
+                        <span asp-validation-for="column_L" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="column_M" class="layui-form-label">@ViewData["column_M"]</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_M" class="layui-input" />
+                        <span asp-validation-for="column_M" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

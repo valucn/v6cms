@@ -1,0 +1,74 @@
+@model PagedList<leader_mailbox_entity>
+@{
+    ViewData["Title"] = "领导信箱";
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban">
+    <div class="container clearfix">
+        <div class="m2itmName m2itmName_icon2">
+        </div>
+        <p class="wow fadeInUp">
+
+        </p>
+    </div>
+</div>
+<div class="clearfix navbar-clear"></div>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.guest_name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.reply_type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.content)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="4" style="text-align: center;">
+                        <div class="layui-inline">--没有记录--</div>
+                    </td>
+                </tr>
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.guest_name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.reply_type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.content)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.Pager(Model, new PagerOptions
+    {
+    PageIndexParameterName = "page",
+    TagName = "ul",
+    CssClass = "pagination justify-content-center",
+    CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+    DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+    PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+    PagerItemCssClass= "page-link",
+    Id = "bootstrappager"
+    })
+</div>

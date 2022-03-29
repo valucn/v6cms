@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "生成文章html";
+}
+@section Scripts{
+<script src="~/js/xm-select.js"></script>
+<script>
+    //立即执行函数
+    $(function () {
+        $("#btn_submit").on("click", function(){
+            $("#form1").submit();
+        });
+
+        $.ajax({
+            url:"/v6admin/api/column_api/get_list",
+            data: {
+                show_all: "true"
+            },
+            success: function(data){
+                var demo1 = xmSelect.render({
+                    el: '#demo1',
+                    name: 'column_id',
+                    layVerify: 'required',
+                    filterable: true,
+                    clickClose: true,//选中关闭
+                    radio: true,//单选模式
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        expandedKeys: [ -3 ],
+                    },
+                    data: data
+                });
+                demo1.setValue([ 0 ]);
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form id="form1" asp-action="article_creater" method="get" target="create_frame" class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        选择栏目
+                    </label>
+                    <div class="layui-input-inline">
+                        <div id="demo1" class="xm-select-demo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">起始id</label>
+                    <div class="layui-input-inline">
+                        <input id="start_id" name="start_id" class="layui-input" value="1" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束id</label>
+                    <div class="layui-input-inline">
+                        <input name="end_id" class="layui-input" value='@ViewData["end_id"]' />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">每次生成</label>
+                    <div class="layui-input-inline">
+                        <input name="page_size" class="layui-input" value="20" />
+                    </div>
+                    <div class="layui-inline" style="padding-top: 8px;">个文件</div>
+                </div>
+            </div>
+        </form>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <iframe name="create_frame" src="about:blank" width="90%"></iframe>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                    <button type="button" id="btn_submit" class="layui-btn">生成html</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

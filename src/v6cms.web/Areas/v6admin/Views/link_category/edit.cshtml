@@ -1,0 +1,36 @@
+﻿@model link_category_entity
+@{
+    ViewData["Title"] = "修改链接分类";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="category_name" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="category_name" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="sort_rank" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="sort_rank" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

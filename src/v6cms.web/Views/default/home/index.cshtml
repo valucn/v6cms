@@ -1,0 +1,645 @@
+﻿@inject IDataService _service
+@{
+    Layout = null;
+    ViewData["Title"] = "网站首页";
+
+    var site_config = _service.get_site_config();//网站配置
+
+    var pic_list = _service.get_pic_article_list(6);
+    var zhyw1 = _service.get_article_list(column_id: 15, take: 1, is_top: true);
+    var zhyw2 = _service.get_article_list(15, 6);
+    var ztdt = _service.get_article_list(16, 7);//支队动态
+
+    var product = _service.get_article_list(50, 5);//产品动态
+    var seo = _service.get_article_list(51, 5);//SEO优化
+
+    var ids = new int[] { 5, 9, 11 };//三个通知通报id
+    var tztg = _service.get_article_list(ids, 7);//通知通告
+
+    var nav_city = _service.get_link_list(3);//本市导航
+    var nav_province = _service.get_link_list(4);//本省导航
+    var partner = _service.get_link_list(3);//合作伙伴
+
+    var ad_bay_window_list = _service.get_ad_list(ad_type_enum.飘窗广告);//获取飘窗广告
+    var ad_floating_list = _service.get_ad_list(ad_type_enum.浮动广告);//获取浮动广告
+
+    var birth_user = _service.get_today_birthday();//获取当天过生日的用户列表
+
+    int ad_index = 0;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @site_config.site_name</title>
+    @if (site_config.site_color == "gray")
+    {
+        <script src="/js/grayscale.js"></script>
+        <script>
+            window.onload=function(){
+                grayscale(document.body);
+            }
+        </script>
+        <style type="text/css">
+            html {
+                overflow-y: scroll;
+                filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+                -webkit-filter: grayscale(100%);
+            }
+        </style>
+    }
+    <link rel="stylesheet" href="/templates/sscms/css/bootstrap-4.1.0.min.css">
+    <link rel="stylesheet" href="/templates/sscms/css/font-awesome-4.7.0.min.css">
+    <link rel="stylesheet" href="/templates/sscms/css/siteserver.min.css">
+    <link rel="stylesheet" href="/templates/sscms/css/style.css">
+    <link rel="stylesheet" href="/templates/sscms/css/element-ui.css">
+    <link href="/templates/sscms/css/index.css" rel="stylesheet" type="text/css" />
+    <style>
+        .nav-link {
+            display: inline;
+            padding: 0;
+        }
+
+        .ss-dropdown {
+            width: 260px;
+        }
+
+        .dropdown-item {
+            cursor: pointer;
+        }
+
+        .swiper-container {
+            width: 672px;
+            max-width: 100%;
+            height: 380px;
+        }
+
+        @@media (max-width:993px) {
+            .cmsv7_nav span {
+                margin: 0 8px;
+            }
+
+            .cmsv7ul {
+                margin-left: -15px;
+                margin-right: -15px;
+            }
+
+                .cmsv7ul li {
+                    width: 50%;
+                    padding: 0 15px !important;
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mainContent">
+        <nav class="navbar home-top-navbar navbar-expand-md fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <span class="logo"></span>
+                </a>
+                <button class="navbar-toggler collapsed menu-toggle-button"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link on" href="/">首页</a>
+                        </li>
+                        @foreach (var item in _service.get_column_nav())
+                        {
+                            string url = $"/column/article_list/{item.id}";
+                            if (!string.IsNullOrEmpty(item.route_value))
+                            {
+                                url = $"/{item.route_value}";
+                            }
+                            if (item.column_attribute == column_attribute_enum.外部链接 && !string.IsNullOrEmpty(item.external_link))
+                            {
+                                url = item.external_link;
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" href="@url" target="@item.target">@item.column_name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <style>
+                    .nav-link {
+                        display: inline;
+                        padding: 0;
+                    }
+
+                    .ss-dropdown {
+                        width: 260px;
+                    }
+
+                    .dropdown-item {
+                        cursor: pointer;
+                    }
+                </style>
+                <div id="status">
+                    <template v-if="user && pageLoad">
+                        <div class="menu-extras">
+                            <ul class="list-inline float-right mb-0">
+                                <li class="list-inline-item dropdown notification-list">
+                                    <a click="openUserMenu" class="nav-link dropdown-toggle nav-user" href="javascript:;" style="position: relative;display: block;width: 80px;">
+                                        <img :src="getAvatarUrl()" alt="user" class="rounded-circle">
+                                        <span v-if="user.isVip" class="badge badge-purple noti-icon-badge" style="top: -12px;right: 12px;">vip</span>
+                                    </a>
+                                    <div click="menuClick" :style="{display: isUserMenu ? 'block': 'none'}" class="dropdown-menu dropdown-menu-right ss-dropdown">
+
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item text-muted font-15" style="font-size: 14px;">
+                                                欢迎回来，{{ user.displayName || user.userName }}
+                                            </li>
+                                        </ul>
+
+                                        <a href="/home/" style="font-size: 14px;" target="_blank" class="dropdown-item notify-item">
+                                            <i class="fa fa-home"></i>
+                                            用户中心
+                                        </a>
+
+                                        <!-- <a href="/home#profile/" style="font-size: 14px;" class="dropdown-item notify-item">
+                                          <i class="fa fa-gear"></i>
+                                          设 置
+                                        </a> -->
+
+                                        <a href="getLogoutUrl()" style="font-size: 14px;" class="dropdown-item notify-item">
+                                            <i class="fa fa-sign-out"></i>
+                                            退 出
+                                        </a>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </template>
+                    <template v-else-if="pageLoad">
+                        <span>
+                            <a class="nav-link" style="font-size: 14px;" :href="getRegisterUrl()">
+                                注 册
+                            </a>
+                            <a class="nav-link" style="font-size: 14px;" :href="getLoginUrl()">
+                                登 录
+                            </a>
+                        </span>
+                    </template>
+                </div>
+
+            </div>
+        </nav>
+        <div class="hmBanBox">
+            <div class="container clearfix">
+
+                <div class="hmBanTxt">
+                    <div class="hmBan_timg">
+                        <span>SS CMS 内容管理系统</span>
+                    </div>
+                    <div class="hmBan_st" style="padding-top: 0; padding-bottom: 12px;">开源、跨平台、企业级</div>
+                    <div style="font-size: 18px; line-height:28px; color:#e2e2e2; padding-bottom: 20px;">
+                        快速创建在Windows，Linux、Mac或者
+                        <br />
+                        Docker上运行的网站及微信公众号
+                    </div>
+                    <a href="javascript:;" onclick="layer.open({type: 2,title: '安装包下载',shadeClose: true,shade: 0.8,area: ['680px', '450px'],content: '/layer/download.html'});" class="hmBan_down">
+                        免费下载
+                    </a>
+                    <div class="hmBan_tg" style="width: 360px;height: 57px;">
+                        最新版本： <span id="ciVersion" class="mr-2"></span>
+                        发布日期： <span id="ciReleaseDate"></span>
+                        <a href="https://sscms.com/docs/v7/updates/" target="_blank" style="color: #ffe788;display: block;line-height: 12px;">新版本更新说明</a>
+                    </div>
+                    <div class="hmBan_bm" style="color:#f1f1f1;">
+                        超过 <span>50</span> 万网站的选择 — 加入这个大家庭<br />
+                        <iframe src="https://ghbtns.com/github-btn.html?user=siteserver&repo=cms&type=star&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20" style="margin: 0 10px -6px; border: none;"></iframe>
+                    </div>
+                </div>
+
+                <!-- https://slidesgo.com/theme/puress-online#variant-380 -->
+                <a href="/blog/69/336.html" target="_blank">
+                    <img src="/templates/sscms/images/banner0.png" class="hmBan_img">
+                </a>
+            </div>
+        </div>
+
+        <div class="sBom1">
+            <div class="container clearfix">
+                <span class="aBom_t">
+                    今天过生日：
+                    @foreach (var item in birth_user)
+                    {
+                        <span>@item.real_name</span>
+                    }
+                    <marquee onmouseover="this.stop()" onmouseout="this.start()">
+                        <script src="/duty/get_js"></script>
+                    </marquee>
+                </span>
+            </div>
+        </div>
+
+        <div class="hmCon4">
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col col-sm-12 col-md-6">
+                        <div class="hmc4box">
+                            <div class="hmc4_t">
+                                <span>文 档</span>
+                                <a class="hmc4_more" href="/docs/">更多>></a>
+                            </div>
+
+                            <div class="hmc4Top">
+                                <a target="_blank" href="/docs/v7/">
+                                    <span class="float-left">
+                                        <img src="https://sscms.com/docs/v7/logo.png" width="102" height="102" style="margin-left: 22px;" />
+                                    </span>
+                                    <div class="hmc4TopR">
+                                        <strong>
+                                            SS CMS 7.1 向导
+                                        </strong>
+                                        <span>
+                                            2020年5月1日
+                                        </span>
+                                        <p>
+                                            本向导针对 SS CMS 7.1 跨平台 .NET CORE 版本撰写。
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <ul class="hmc4_ul">
+                                <li>
+                                    【产品介绍】
+                                    <a class="text-primary" target="_blank" href="/docs/v6/introduction/#/what-is-siteserver-cms">SiteServer CMS 是什么</a>
+                                    <span class="float-right">
+                                        2018-11-26
+                                    </span>
+                                </li>
+
+                                <li>
+                                    【产品介绍】
+                                    <a class="text-primary"
+                                       target="_blank"
+                                       href="/docs/v6/introduction/#/what-can-siteserver-cms-do">SiteServer CMS 能做什么</a>
+                                    <span class="float-right">
+                                        2018-11-26
+                                    </span>
+                                </li>
+
+                                <li>
+                                    【产品介绍】
+                                    <a class="text-primary"
+                                       target="_blank"
+                                       href="/docs/v6/introduction/#/siteserver-cms-features">SiteServer CMS 产品特性</a>
+                                    <span class="float-right">
+                                        2018-11-26
+                                    </span>
+                                </li>
+
+                                <li>
+                                    【新手入门】
+                                    <a class="text-primary"
+                                       target="_blank"
+                                       href="/docs/v6/getting-started/#/how-to-install-siteserver-cms">如何安装SiteServer CMS</a>
+                                    <span class="float-right">
+                                        2018-11-26
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col col-sm-12 col-md-6">
+                        <div class="hmc4box">
+                            <div class="hmc4_t">
+                                <span>版本更新</span>
+                                <a class="hmc4_more" href="/docs/v7/updates/">更多>></a>
+                            </div>
+
+                            <div class="hmc4Top">
+                                <a href="https://sscms.com/docs/v7/updates/">
+                                    <span class="float-left">
+                                        <img width="148" height="102" src="/templates/sscms/images/update.png">
+                                    </span>
+                                    <div class="hmc4TopR">
+                                        <strong>
+                                            SSCMS 新版本 V7.1.0
+                                        </strong>
+                                        <span>
+                                            2021-11-14
+                                        </span>
+                                        <p>
+                                            欢迎使用 2021 年 11 月发布的 SSCMS v7.1.0 版本。新版本采用最新的 .NET 6 作为开发框架，新增 SSCMS 安全运行模式，同时增加了部分功能以及修复了漏洞
+                                        </p>
+                                    </div>
+                                </a>
+
+                            </div>
+
+                            <ul class="hmc4_ul">
+
+                                <li>
+                                    <a class="text-primary" href="https://sscms.com/docs/v7/updates/v7_0_12.html">SSCMS 新版本 V7.0.12（2021 年 06 月发布）</a>
+                                    <span class="float-right">
+
+                                    </span>
+                                </li>
+
+                                <li>
+                                    <a class="text-primary" href="https://sscms.com/docs/v7/updates/v7_0_11.html">SSCMS 新版本 V7.0.11（2021 年 03 月发布）</a>
+                                    <span class="float-right">
+
+                                    </span>
+                                </li>
+
+                                <li>
+                                    <a class="text-primary" href="https://sscms.com/docs/v7/updates/v7_0_10.html">SSCMS 新版本 V7.0.10（2021 年 01 月发布）</a>
+                                    <span class="float-right">
+
+                                    </span>
+                                </li>
+
+                                <li>
+                                    <a class="text-primary" href="https://sscms.com/docs/v7/updates/v7_0_9.html">SSCMS 新版本 V7.0.9（2020 年 12 月发布）</a>
+                                    <span class="float-right">
+
+                                    </span>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="bg-white p-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 m-auto text-center">
+                        <h2 class="p-3 m-3">产品用户</h2>
+                        <div class="row mt-3 pb-2">
+                            <div class="col-md-4">
+                                <h4 class="text-primary mb-0" style="font-size: 2rem;">
+                                    50万+
+                                </h4>
+                                <p class="font-18">网站用户</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-primary mb-0" style="font-size: 2rem;">
+                                    3000+
+                                </h4>
+                                <p class="font-18">付费用户</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-primary mb-0" style="font-size: 2rem;">
+                                    500+
+                                </h4>
+                                <p class="font-18">重点客户</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 u-mt-80">
+                        <ul class="hmc5_ul clearfix">
+                            @foreach (var item in partner)
+                            {
+                                <li>
+                                    <span class="hmc5_sBox">
+                                        <img src="@item.logo" alt="logo" />
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <!-- <a href="/vip/#pricing" class="hmc5_more mx-auto mb-5">
+                      <span>获取服务</span>
+                    </a> -->
+                </div>
+            </div>
+        </section>
+
+        <div class="sBom2">
+            <div class="container clearfix">
+                <img class="sBom2_logo" src="/templates/sscms/images/bom_logo.png" width="195" height="34">
+                <div class="sBom1L" style="position: absolute;left: 15px;top: 45px;">
+                    <strong class="aBom_t">源码下载</strong>
+                    <a href="https://github.com/siteserver/cms" target="_blank">
+                        <img src="/templates/sscms/images/github.png" style="width: 50px; height: 50px; margin-right: 15px;" />
+                    </a>
+                    <a href="https://gitee.com/siteserver/cms" target="_blank">
+                        <img src="/templates/sscms/images/gitee.png" style="width: 50px; height: 50px; margin-right: 15px;" />
+                    </a>
+                </div>
+                <dl class="sBom2_dl">
+                    <dt>v6cms 入门</dt>
+                    <dd>
+                        <a href="/docs/v7/getting-started/using-linux-centos.html" target="_blank" class="sBom2_a">在 Linux 中运行</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/getting-started/using-windows.html" target="_blank" class="sBom2_a">在 Windows 中运行</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/getting-started/using-mac.html" target="_blank" target="_blank" class="sBom2_a">在 MacOS 中运行</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/getting-started/using-docker.html" target="_blank" target="_blank" class="sBom2_a">在 Docker 中运行</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/getting-started/features.html" target="_blank" target="_blank" class="sBom2_a">v6cms 功能清单</a>
+                    </dd>
+                </dl>
+                <dl class="sBom2_dl">
+                    <dt>参考手册</dt>
+                    <dd>
+                        <a href="/docs/v7/stl/" target="_blank" target="_blank" class="sBom2_a">STL语言</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/official/" target="_blank" target="_blank" class="sBom2_a">插件手册</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/cli/" target="_blank" target="_blank" class="sBom2_a">CLI命令行</a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/api/" target="_blank" target="_blank" class="sBom2_a">REST API </a>
+                    </dd>
+                    <dd>
+                        <a href="/docs/v7/model/" target="_blank" target="_blank" class="sBom2_a">数据结构</a>
+                    </dd>
+                </dl>
+                <dl class="sBom2_dl">
+                    <dt>开源生态</dt>
+                    <dd>
+                        <a href="/partners/" class="sBom2_a">合作伙伴</a>
+                    </dd>
+                    <dd>
+                        <a href="https://github.com/siteserver/cms/issues/" target="_blank" class="sBom2_a">Github Issues</a>
+                    </dd>
+                    <dd>
+                        <a href="https://gitee.com/siteserver/cms/issues/" target="_blank" class="sBom2_a">Gitee Issues</a>
+                    </dd>
+                </dl>
+                <div class="sBom2_dl text-center">
+                    <img src="/templates/sscms/images/qrcode_for_wx.jpg" width="120" height="120">
+                    <br>
+                    <small class="text-white">微信服务号</small>
+                </div>
+            </div>
+        </div>
+        <footer class="footer" style="height: 65px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        @Html.Raw(site_config.copyright)
+                        <a target="_blank" href="http://www.beian.miit.gov.cn/">@site_config.icp</a>
+                        <br />
+                        技术支持：<a href="https://www.jundie.net" target="_blank">南京骏蝶科技有限公司</a>
+                        <br />
+                        @Html.Raw(site_config.count_code)
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <a href="#" class="backToTop"></a>
+    </div>
+    <div id="menuContent">
+        <div class="row">
+            <div class="col-12">
+                <div class="card-body">
+                    <a class="text-dark font-18" href="/">首 页</a>
+                    <hr />
+
+                    <a class="text-dark font-18" href="/cms/">产 品</a>
+                    <hr>
+
+                    <a class="text-dark font-18" href="/plugins/">插 件</a>
+                    <hr>
+
+                    <a class="text-dark font-18" href="/templates/">模 板</a>
+                    <hr>
+
+                    <a class="text-dark font-18" href="/docs/">文 档</a>
+                    <hr>
+
+                    <a class="text-dark font-18" href="/partners/">生 态</a>
+                    <hr>
+
+                    <a class="text-dark font-18" href="/aboutus/">关 于</a>
+                    <hr>
+
+                    <a class="text-dark font-18" target="_blank" href="https://sscms.com/docs/v7/updates/">版本更新</a>
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/slideout-1.0.1.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/es6-promise.auto.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/axios-0.17.1.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/layer.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/vue-2.5.16.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/vee-validate-2.1.0.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/vee-validate-locale-zh_CN-2.1.0.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/js.cookie-2.2.0.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/lodash-4.17.10.min.js"></script>
+    <script type="text/javascript" src="/templates/sscms/js/index.js"></script>
+    <script src="/templates/sscms/js/ci.js"></script>
+    <script src="/templates/sscms/js/home.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/templates/sscms/js/utils.js" data-type="user"></script>
+    <script type="text/javascript" src="/templates/sscms/js/cloud.js" data-type="user"></script>
+    <script type="text/javascript" src="/templates/sscms/js/status.js"></script>
+
+    @foreach (var ad in ad_floating_list)
+    {
+        ad_index++;//广告索引加1
+        <!--浮动 @ad.id -->
+        <div id="ad_@ad.id" style="position:fixed;width:160px;height:100px;z-index:9999999;left: 20px; top: @(355 + ad_index * 95)px;" onMouseOver="pause_resume()" onMouseOut="start()">
+            <div onClick="hide_ad(@ad.id);" style="cursor: pointer;color:#000;width:40px;height:22px;line-height:22px;float:right;" align="right">关闭×</div>
+            <a href="@ad.url" target="_blank" title="">
+                <img id="ad_img_@ad.id" src="@ad.pic" width="160" height="70" alt="" />
+            </a>
+        </div>
+        <!--//浮动 @ad.id -->
+    }
+    @foreach (var ad in ad_bay_window_list)
+    {
+        <!--飘窗 @ad.id-->
+        <div id="ad_@ad.id" style="width:200px;height:60px;position:absolute;z-index:9999999;left: 200px; top: 200px;" onMouseOver="pause_resume()" onMouseOut="start()">
+            <div onClick="hide_ad(@ad.id);" style="cursor: pointer;color:#000;width:40px;height:22px;line-height:22px;float:right;" align="right">关闭×</div>
+            <a href="@ad.url" target="_blank" title="">
+                <img src="@ad.pic" alt="" />
+            </a>
+        </div>
+        <script type="text/javascript">
+            var ad_img = document.getElementById('ad_@ad.id');
+            var xPos = 000;
+            var yPos = 480;
+            var step = 03;
+            var delay = 40;
+            var height = 0;
+            var Hoffset = 0;
+            var Woffset = 0;
+            var yon = 0;
+            var xon = 0;
+            var pause = true;
+            var interval;
+            ad_img.style.top = yPos;
+            function changePos() {
+            width = document.documentElement.clientWidth || document.documentElement.clientWidth;
+            height = document.documentElement.clientHeight || document.documentElement.clientHeight;
+            scrollLeft = document.documentElement.scrollLeft || document.documentElement.scrollLeft;
+            scrollTop = document.documentElement.scrollLeft || document.documentElement.scrollTop;
+            Hoffset = ad_img.offsetHeight;
+            Woffset = ad_img.offsetWidth;
+            ad_img.style.left = xPos + scrollLeft +'px';
+            ad_img.style.top = yPos + scrollTop +'px';
+            if (yon) {
+            yPos = yPos + step;
+            } else {
+            yPos = yPos - step;
+            }
+            if (yPos < 0) {
+            yon = 1;
+            yPos = 0;
+            }
+            if (yPos >= (height - Hoffset)) {
+            yon = 0;
+            yPos = (height - Hoffset);
+            }
+            if (xon) {
+            xPos = xPos + step;
+            } else {
+            xPos = xPos - step;
+            }
+            if (xPos < 0) {
+            xon = 1;
+            xPos = 0;
+            }
+            if (xPos >= (width - Woffset)) {
+            xon = 0;
+            xPos = (width - Woffset);
+            }
+            }
+            function start() {
+            ad_img.visibility = "visible";
+            interval = setInterval('changePos()', delay);
+            }
+            function pause_resume()
+            {
+            clearInterval(interval);
+            }
+            start();
+        </script>
+        <!--//飘窗 @ad.id-->
+    }
+    <script>
+        function hide_ad(id) {
+            var obj = document.getElementById('ad_' + id);
+            obj.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+﻿@model PagedList<link_entity>
+@{
+    ViewData["Title"] = "链接管理";
+    var link_category = ViewData["link_category"] as SelectList;
+    string category_id = ViewData["category_id"].ToString();
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <form method="get">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">分类</label>
+                    <div class="layui-input-inline">
+                        <select asp-items="ViewBag.category_id" asp-for="@category_id" class="form-control">
+                            <option value="">--不限--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">关键词</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="keyword" placeholder="请输入" value='@ViewData["keyword"]' autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="layui-card-body">
+        <a asp-action="create" class="layui-btn layui-btn-normal">添加链接</a>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.link_category)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.logo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.url)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.sort_rank)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="6" style="text-align: center;">--没有记录--</td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.link_category.category_name)
+                        </td>
+                        <td>
+                            <span style="color:@item.font_color;font-weight:@item.font_weight;">@Html.DisplayFor(modelItem => item.title)</span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.logo))
+                            {
+                                <img src="@item.logo" alt="logo" style="max-width: 120px;max-height: 120px;" />
+                            }
+                        </td>
+                        <td>
+                            <a href="@item.url" target="_blank">@item.url</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.sort_rank)
+                        </td>
+                        <td width="70" align="right">
+                            <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

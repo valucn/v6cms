@@ -1,0 +1,83 @@
+@model PagedList<comment_entity>
+@{
+    ViewData["Title"] = "评论管理";
+}
+
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.article.title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.comment_content)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.comment_time)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="6" style="text-align: center;">
+                            <div class="layui-inline">--没有记录--</div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            <a href="/article/details/@item.article.id" target="_blank" class="layui-link">@item.article.title</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comment_content)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comment_time)
+                        </td>
+                        <td align="right" width="70">
+                            <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

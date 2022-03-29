@@ -1,0 +1,49 @@
+@model user_role_entity
+@{
+    ViewData["Title"] = "添加角色";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="create" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="role_name" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input asp-for="role_name" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+
+            @{
+                var data_range_list = Html.GetEnumSelectList<data_range_enum>();
+            }
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label class="layui-form-label">数据范围</label>
+                    <div class="layui-input-block">
+                        <v6cms-radio asp-items="@data_range_list" asp-for="data_range"></v6cms-radio>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label class="layui-form-label">限制</label>
+                    <div class="layui-input-block">
+                    <input asp-for="is_need_review" title="发布文章是否需要审核" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

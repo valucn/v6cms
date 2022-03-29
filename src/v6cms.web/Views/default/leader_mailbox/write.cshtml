@@ -1,0 +1,73 @@
+@model leader_mailbox_entity
+@{
+    ViewData["Title"] = "领导信箱";
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban">
+    <div class="container clearfix">
+        <div class="m2itmName m2itmName_icon2">
+        </div>
+        <p class="wow fadeInUp">
+
+        </p>
+    </div>
+</div>
+<div class="clearfix navbar-clear"></div>
+
+<div class="container">
+    <form method="post">
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    <span style="color: red;">*</span>
+                    @Html.DisplayNameFor(m=>m.title)
+                </th>
+                <td><input asp-for="title" class="form-control" required="required" /></td>
+            </tr>
+            <tr>
+                <th>
+                    <span style="color: red;">*</span>
+                    @Html.DisplayNameFor(m=>m.guest_name)
+                </th>
+                <td><input asp-for="guest_name" class="form-control" required="required" /></td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m=>m.guest_unit)</th>
+                <td><input asp-for="guest_unit" class="form-control" /></td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m=>m.guest_email)</th>
+                <td><input asp-for="guest_email" class="form-control" /></td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m=>m.guest_mobile)</th>
+                <td><input asp-for="guest_mobile" class="form-control" /></td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m=>m.mail_type)</th>
+                <td>
+                    <select asp-for="mail_type" class="form-control">
+                        <option>反馈</option>
+                        <option>表扬</option>
+                        <option>建议</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m=>m.reply_type)</th>
+                <td><select asp-for="reply_type" asp-items="Html.GetEnumSelectList<reply_type_enum>()" class="form-control"></select></td>
+            </tr>
+            <tr>
+                <th>
+                    <span style="color: red;">*</span>
+                    @Html.DisplayNameFor(m=>m.content)
+                </th>
+                <td><textarea asp-for="content" class="form-control" required="required"></textarea></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><input type="submit" class="btn btn-primary" value="提交" /></td>
+            </tr>
+        </table>
+    </form>
+</div>

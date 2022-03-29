@@ -1,0 +1,50 @@
+@model column_entity
+@{
+    ViewData["Title"] = "修改栏目内容";
+}
+@section header{
+}
+@section Scripts{
+<script src="~/lib/ueditor-1.4/ueditor.config.js"></script>
+<script src="~/lib/ueditor-1.4/ueditor.all.min.js"></script>
+<script type="text/javascript">
+    var ue = UE.getEditor('content', {
+        zIndex: "0",
+        allowDivTransToP: false,
+        initialFrameWidth: '100%',
+        initialFrameHeight: 300
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" method="post" action="" lay-filter="component-form-group">
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">栏目名称</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input" value='@Model.column_name' readonly="readonly" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">栏目内容</label>
+                <div class="layui-input-block">
+                    <textarea asp-for="content"></textarea>
+                </div>
+            </div>
+            
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

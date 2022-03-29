@@ -1,0 +1,106 @@
+@model PagedList<ask_entity>
+@{
+    ViewData["Title"] = "管理提问";
+}
+@section header{
+<link rel="stylesheet" href="/layuiadmin/style/template.css" media="all">
+}
+@section Scripts{
+<script>
+    $(function(){
+        $(".layui-btn.layui-btn-sm.layui-btn-danger.del-reply").on("click",function(){
+            if(confirm("确认删除答疑吗？")){
+                $.ajax({
+                    url: "/v6admin/api/ask_reply_api/delete",
+                    data: {
+                        id: $(this).data("id")
+                    },
+                    success:function(res){
+                        layer.msg(res.msg)
+                        setTimeout("location.reload()", 3000);
+                    }
+                });
+            }
+        });
+    });
+</script>
+}
+<div class="layadmin-caller">
+    <form class="layui-form caller-seach" action="">
+        <i class="layui-icon layui-icon-search caller-seach-icon caller-icon"></i>
+        <input type="text" name="keyword" required lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input caller-pl32">
+        <i class="layui-icon layui-icon-close caller-dump-icon caller-icon"></i>
+    </form>
+    <div class="layui-tab layui-tab-brief caller-tab" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">所有提问</li>
+            @*<li>联系方式</li>
+                <li>联系地址</li>*@
+        </ul>
+    </div>
+    <div class="caller-contar">
+        @foreach (var item in Model)
+        {
+            <div class="caller-item">
+                <img src="../../layuiadmin/style/res/template/portrait.png" alt="" class="caller-img caller-fl">
+                <div class="caller-main caller-fl">
+                    <p>
+                        <strong>@item.member.nick_name</strong>
+                        <em>提问时间：@item.create_time.ToString("yyyy-MM-dd HH:mm:ss")</em>
+                        <em>IP：@item.ip</em>
+                        <em>单位：@item.member.company</em>
+                        <em>通过审核：@Html.DisplayFor(modelItem => item.is_review)</em>
+                    </p>
+                    <h2>@item.title</h2>
+                    <p class="caller-adds">
+                        @item.content
+                    </p>
+                </div>
+                <a asp-action="edit" asp-route-id="@item.id" class="layui-btn layui-btn-sm caller-fr">修改</a>
+                @if (item.reply.Count() == 0)
+                {
+                    <a asp-action="create" asp-controller="ask_reply" asp-route-ask_id="@item.id" asp-route-ask_title="@item.title" class="layui-btn layui-btn-sm caller-fr layui-btn-normal">答疑</a>
+                }
+                <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除提问吗？');" class="layui-btn layui-btn-sm caller-fr layui-btn-danger">删除</a>
+                <div style="margin: 90px 0 0 60px;padding: 12px; border: #CCC 1px solid;background-color: #FFFFCC;">
+                    @if (item.reply.Count() == 0)
+                    {
+                        <span>暂无回复</span>
+                    }
+                    @foreach (var reply in item.reply)
+                    {
+                        <div>@reply.content</div>
+                        <div>
+                            回复时间：@reply.reply_time.ToString("yyyy-MM-dd HH:mm:ss")
+                            <span>&nbsp;</span>
+                            IP：@reply.ip
+                            <span>&nbsp;</span>
+                            单位：@reply.user.post
+                            <span>&nbsp;</span>
+                            电话：@reply.user.mobile
+                        </div>
+                        <div>
+                            <a asp-action="edit" asp-controller="ask_reply" asp-route-id="@reply.id" asp-route-ask_title="@item.title" class="layui-btn layui-btn-sm edit-reply">修改答疑</a>
+                            <a class="layui-btn layui-btn-sm layui-btn-danger del-reply" data-id="@reply.id">删除答疑</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

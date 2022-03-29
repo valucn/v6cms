@@ -1,0 +1,60 @@
+﻿@inject IDataService _service
+@{
+    string keyword = Context.Request.Query["keyword"];
+    int page = Html.get_query_int("page");
+
+    ViewData["Title"] = $"搜索 - {keyword}";
+
+    var data_list = new List<article_entity>().ToPagedList(page, 15);
+    if (!string.IsNullOrEmpty(keyword))
+    {
+        data_list = _service.search_article_page(keyword, page, 15);
+    }
+    var site_config = _service.get_site_config();
+}
+<div class="w1000 center clear">
+    <div class="search_header">
+        <div class="search_box">
+            <form>
+                <input name="keyword" type="text" id="search-keyword" value="@keyword" placeholder="在这里搜索..." />
+                <button type="submit" class="search-submit">搜索</button>
+            </form>
+        </div>
+        <div id="searchTopBanner" style="float:right; margin:10px"><script src='{dede:global.cfg_cmsurl/}/plus/ad_js.php?aid=18' language='javascript'></script> </div>
+    </div><!-- //top -->
+    <!-- /header -->
+    <div class="resultbar">搜索 <strong class="fc_03c">@keyword</strong> 的结果 </div>
+    <div class="result_content">
+        <div class="resultlist">
+            <ul>
+                @foreach (var item in data_list)
+                {
+                    string url = item.id.to_html_url(item.article_snow_id, item.publish_time, item.column.html_path_rule, item.column.list_option);
+                    <li>
+                        <h3><a href="@url">@item.title</a></h3>
+                        <p>@item.summary</p>
+                        <span>
+                            <a href="url">@(site_config.site_url + url)</a>
+                            <small>分类：</small><a href="@item.column_id.to_route_url(item.column.route_value)">@item.column.column_name</a>
+                            <small>点击：</small>@item.views
+                            <small>日期：</small>@item.publish_time.ToString("yyyy-MM-dd HH:mm:ss")
+                        </span>
+                    </li>
+                }
+            </ul>
+            <div class="fl dede_pages">
+                    @Html.Pager(data_list, new PagerOptions
+    {
+    PageIndexParameterName = "page",
+    TagName = "ul",
+    CssClass = "pagination justify-content-center",
+    CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+    DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+    PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+    PagerItemCssClass= "page-link",
+    Id = "bootstrappager"
+    })
+            </div><!-- /pages -->
+        </div><!-- /listbox -->
+    </div>
+</div>

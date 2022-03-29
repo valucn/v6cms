@@ -1,0 +1,47 @@
+﻿@model IEnumerable<code_generate_entity>
+@{
+    ViewData["Title"] = "选择表导入";
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <p><a asp-action="index" class="layui-btn layui-btn-normal">返回到列表</a></p>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        序号
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.table_name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.table_desc)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.table_name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.table_desc)
+                        </td>
+                        <td style="text-align: right;">
+                            <a asp-action="import_table" asp-route-table_name="@item.table_name" asp-route-table_desc="@item.table_desc" class="layui-btn">导入</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

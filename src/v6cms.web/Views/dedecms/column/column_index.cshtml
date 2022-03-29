@@ -1,0 +1,20 @@
+@inject data_service _service
+@{
+    int column_id = Html.get_route_int("id");
+    var column = await _service.get_column_details(column_id);
+    ViewData["Title"] = column.column_name;
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban">
+    <div class="container clearfix">
+        <div class="m2itmName m2itmName_icon2">
+            @column.column_name
+        </div>
+        <p class="wow fadeInUp">
+            @column.intro
+        </p>
+    </div>
+</div>
+<div class="clearfix navbar-clear"></div>
+@Html.Raw(column.content)
+<div class="clearfix navbar-clear"></div>

@@ -1,0 +1,87 @@
+﻿@inject IDataService _service
+@{
+    var site_config = _service.get_site_config();
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@(ViewData["Title"]==null?"":ViewData["Title"]+"_")@site_config.site_name</title>
+    <meta name="description" content="@site_config.description" />
+    <meta name="keywords" content="@site_config.keywords" />
+    <link href="/templates/dedecms/style/dedecms.css" rel="stylesheet" media="screen" type="text/css" />
+    <link href="/templates/dedecms/style/style.css" rel="stylesheet" /><!-- 改首页轮播css -->
+</head>
+
+<body>
+    <div>
+        <div class="header_top">
+            <div class="h_t_l">九度 - 酒类大数据中心</div>
+            <div class="h_t_c">
+            </div>
+            <div class="h_t_r">
+            </div>
+        </div>
+        <!-- header_top -->
+        <!-- header -->
+        <div class="iheader">
+            <div class="top">
+                <div class="title">
+                    <h1><a href="/"><img src="/templates/dedecms/images/logo.gif" height="65" width="180" alt="@site_config.site_name" /></a> </h1>
+                </div>
+                <div class="banner"></div>
+            </div><!-- //top -->
+            <!-- //菜单 -->
+            <div class="header_dh">
+                <div class="top">
+                    <!-- //如果不使用currentstyle，可以在channel标签加入 cacheid='channeltoplist' 属性提升性能 -->
+                    <div id="navMenu">
+                        <ul>
+                            <li><a href='/'><span>首页</span></a></li>
+                            @foreach (var item in _service.get_column_nav())
+                            {
+                                <li><a href='@item.id.to_route_url(item.route_value)' target="@item.target"><span>@item.column_name</span></a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /header -->
+    </div>
+    <!-- /header -->
+    @RenderBody()
+
+    <!-- //底部模板 -->
+    <div class="footer w1000 center mt1 clear">
+        <div class="footer_left"></div>
+        <div class="footer_body">
+            <p class="powered">
+                杜绝虚假信息  欢迎社会监督
+                正宗酒类品牌数据查询网站  权威查询  谨防假冒
+                未经书面授权禁止转载TOP云酒名单数据
+                举报电话：025-85737881
+                举报邮箱：10529212@qq.com
+                <br />
+                公司地址：南京市雨花台区软件大道23号
+                <div class="copyright">Copyright © 2022 <a href="https://beian.miit.gov.cn" target="_blank">@site_config.icp</a></div>
+                Powered by <a href="https://www.v6cms.cn" target="_blank">v6cms</a>.
+                <!--/powered -->
+        </div>
+        <div class="footer_right">
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?42003b7d12525df910827976c45ca19d";
+                  var s = document.getElementsByTagName("script")[0];
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+        </div>
+    </div>
+    <!-- /footer -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

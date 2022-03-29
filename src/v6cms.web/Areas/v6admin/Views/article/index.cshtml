@@ -1,0 +1,194 @@
+@model PagedList<article_entity>
+@{
+    ViewData["Title"] = "文章管理";
+}
+@section Scripts{
+<script src="~/js/xm-select.js"></script>
+<script>
+
+    $(function(){
+        $(".review").on("click",function(){
+            var id = $(this).data("id");
+            $.ajax({
+                url: "/v6admin/api/article_api/review",
+                data: {
+                    "article_id": id
+                },
+                success: function(res){
+                    layer.msg(res.msg);
+                    setTimeout("location.reload();", 3000);
+                }
+            });
+        });
+
+        $.ajax({
+            url:"/v6admin/api/column_api/get_list",
+            success: function(data){
+                var demo1 = xmSelect.render({
+                    el: '#demo1',
+                    name: 'column_id',
+                    filterable: true,
+                    clickClose: true,//选中关闭
+                    radio: true,//单选模式
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        //默认展开节点的数组[1,2,3], 为 true 时, 展开所有节点
+                        expandedKeys: true,
+                    },
+                    data: data
+                });
+                demo1.setValue([ @ViewData["column_id"] ]);
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <form method="get">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        选择栏目
+                    </label>
+                    <div class="layui-input-inline">
+                        <div id="demo1" class="xm-select-demo"></div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">关键字</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="keyword" placeholder="请输入" class="layui-input" value='@ViewData["keyword"]' />
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+            <a asp-action="create" class="layui-btn layui-btn-normal">添加文章</a>
+        </div>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.column.column_name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.title)
+                    </th>
+                    <th>
+                        置顶
+                    </th>
+                    <th>
+                        推荐
+                    </th>
+                    <th>
+                        热门
+                    </th>
+                    <th>
+                        图片
+                    </th>
+                    <th>
+                        审核
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.publish_time)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="9" style="text-align: center;">
+                            <div class="layui-inline">--没有记录--</div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    string title = item.title;
+                    if (ViewData["keyword"] != null)
+                    {
+                        if (!string.IsNullOrEmpty(ViewData["keyword"].ToString()))
+                        {
+                            title = title.Replace(ViewData["keyword"].ToString(), $"<b class='layui-font-red'>{ViewData["keyword"].ToString()}</b>");
+                        }
+                    }
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.column.column_name)
+                        </td>
+                        <td>
+                            <a href="/article/details/@item.article_snow_id" target="_blank">@Html.Raw(title)</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_top)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_recommend)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_hot)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_pic)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.is_review)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.publish_time)
+                        </td>
+                        <td align="right">
+                            <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            @if (!item.is_review && (string)ViewData["review"] == "1")
+                            {
+                                <a href="###" class="review" data-id="@item.id">审核</a>
+                                <span>|</span>
+                            }
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

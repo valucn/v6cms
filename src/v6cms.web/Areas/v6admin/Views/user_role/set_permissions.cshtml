@@ -1,0 +1,54 @@
+@model user_role_entity
+@{
+    ViewData["Title"] = "设置角色权限";
+    var auth_list = ViewData["authority_code_list"] as List<authority_role_model>;
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="set_permissions" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="role_name" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input asp-for="role_name" class="layui-input" readonly="readonly" />
+                    </div>
+                </div>
+            </div>
+            @foreach (var item in auth_list)
+            {
+                <div class="layui-card layui-form">
+                    <div class="layui-card-header">
+                        <strong>@item.role_name</strong>
+                    </div>
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            @foreach (var auth in item.authority_list)
+                            {
+                                string chk = "";
+                                if (Model.authority_code_list.Contains(auth.key))
+                                {
+                                    chk = "checked='checked'";
+                                }
+                                <div class="layui-col-md2">
+                                    <input type="checkbox" name="authority_code" value="@auth.key" title="@auth.name" lay-skin="primary" @chk />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

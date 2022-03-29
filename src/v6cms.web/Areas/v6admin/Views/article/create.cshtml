@@ -1,0 +1,300 @@
+@model article_entity
+@{
+    ViewData["Title"] = "添加文章";
+}
+@section header{
+}
+@section Scripts{
+<script src="~/js/xm-select.js"></script>
+<script src="~/lib/ueditor-1.4/ueditor.config.js"></script>
+<script src="~/lib/ueditor-1.4/ueditor.all.min.js"></script>
+<script>
+    layui.use(['upload'], function(){
+        var laydate = layui.laydate
+        ,upload = layui.upload
+        ,form = layui.form;
+
+        //日期时间选择器
+        laydate.render({
+          elem: '#publish_time'
+          ,type: 'datetime'
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test-upload-normal'
+            ,url: '/v6admin/upload?module=article'
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#test-upload-normal-img').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code == 200) {
+                    $("#pic").val(res.data.path);
+                    $("#is_pic").attr("checked", "checked");
+                    form.render();
+                    return layer.msg('上传成功');
+                }
+                else {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            }
+            ,error: function(){
+
+            }
+        });
+        
+        //上传视频
+        var uploadInst = upload.render({
+            elem: '#test-upload-video'
+            ,accept: 'video' //视频
+            ,url: '/v6admin/upload?module=article&file_type=video'
+            ,done: function(res){
+                //如果上传失败
+                if(res.code == 200) {
+                    $("#video").val(res.data.path);
+                    $("#test-upload-normal-video").attr("src", res.data.path);
+                    return layer.msg('上传成功');
+                }
+                else {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            }
+            ,error: function(){
+
+            }
+        });
+    });
+
+    var ue = UE.getEditor('content', {
+        zIndex: "0",
+        initialFrameWidth: '100%',
+        initialFrameHeight: 300
+    });
+
+    //立即执行函数
+    $(function () {
+        $.ajax({
+            url:"/v6admin/api/column_api/get_list",
+            success: function(data){
+                // 文章栏目
+                var el_column_id = xmSelect.render({
+                    el: '#el_column_id',
+                    name: 'column_id',
+                    height: '380px',
+                    layVerify: 'required',
+                    filterable: true,
+                    clickClose: true,//选中关闭
+                    radio: true,//单选模式
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        //默认展开节点的数组[1,2,3], 为 true 时, 展开所有节点
+                        expandedKeys: true,
+                    },
+                    data: data
+                });
+
+                // 文章附栏目
+                var el_sub_column = xmSelect.render({
+                    el: '#el_sub_column',
+                    name: 'sub_column',
+                    height: '380px',
+                    filterable: true,
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        expandedKeys: true,
+                    },
+                    data: data
+                });
+
+                el_column_id.setValue([ @Model.column_id ]);
+                el_sub_column.setValue([ @Model.sub_column ]);
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" method="post" action="" lay-filter="component-form-group">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span style="color: red;">*</span>
+                        文章栏目
+                    </label>
+                    <div class="layui-input-inline">
+                        <div id="el_column_id" class="xm-select-demo"></div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">视图路径</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="details_view_path" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章附栏目</label>
+                <div class="layui-input-block">
+                    <div id="el_sub_column" class="xm-select-demo"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span style="color: red;">*</span>
+                        查看次数
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="views" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span style="color: red;">*</span>
+                        发布时间
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="publish_time" type="text" asp-format="{0:yyyy-MM-dd HH:mm:ss}" class="layui-input" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+            </div>
+                        
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="pic" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn" id="test-upload-normal">上传图片</button>
+                            <div class="layui-upload-list">
+                                <input type="hidden" asp-for="pic" />
+                                <img class="layui-upload-img" id="test-upload-normal-img" src="@Model.pic" style="max-width: 240px;max-height: 240px;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="video" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn" id="test-upload-video">上传视频</button>
+                            <div class="layui-upload-list">
+                                <input type="hidden" asp-for="video" />
+                                <video class="layui-upload-img" id="test-upload-normal-video" src="@Model.video" style="max-width: 240px;max-height: 240px;" controls="controls">
+                                    您的浏览器不支持 video 标签。
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red;">*</span>
+                    文章标题
+                </label>
+                <div class="layui-input-block">
+                    <input asp-for="title" lay-verify="required" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="author" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="author" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="source" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="source" class="layui-input" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label asp-for="summary" class="layui-form-label">
+                </label>
+                <div class="layui-input-block">
+                    <textarea type="text" asp-for="summary" class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签</label>
+                <div class="layui-input-block">
+                    <input asp-for="is_slide" title="幻灯">
+                    <input asp-for="is_top" title="置顶">
+                    <input asp-for="is_best" title="精华">
+                    <input asp-for="is_recommend" title="推荐">
+                    <input asp-for="is_sr" title="特别推荐">
+                    <input asp-for="is_hot" title="热门">
+                    <input asp-for="is_pic" title="图片">
+                    <input asp-for="is_limit_ip" title="限制IP">
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">采用</label>
+                <div class="layui-input-block">
+                    <input asp-for="use_gab" title="部">
+                    <input asp-for="use_province" title="省">
+                    <input asp-for="use_city" title="市">
+                    <input asp-for="use_branch" title="分局">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">
+                    <span style="color: red;">*</span>
+                    文章内容
+                </label>
+                <div class="layui-input-block">
+                    <textarea id="content" name="content" lay-verify="required"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span style="color: red;">*</span>
+                        文章id
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="article_snow_id" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

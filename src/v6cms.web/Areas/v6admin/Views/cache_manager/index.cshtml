@@ -1,0 +1,72 @@
+﻿@model PagedList<string>
+@{
+    ViewData["Title"] = "缓存管理";
+    int index = 0;
+}
+@section Scripts{
+<script>
+    layui.use(function(){
+    });
+    $(function(){
+        $("button").on("click", function(){
+            if(confirm('确认清空所有缓存吗？')){
+                $.ajax({
+                    url: "/v6admin/cache_manager/clear_all",
+                    success:function(res){
+                        layer.msg(res.msg);
+                       setTimeout("location.reload()", 3000);
+                    }
+                });
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <div>
+            <button type="button" class="layui-btn layui-btn-danger">清空所有</button>
+        </div>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>键名</th>
+                    <th>键值</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    index++;
+                    string[] temp = item.Split('|');
+                    <tr>
+                        <td>@index</td>
+                        <td>@temp[0]</td>
+                        <td>@temp[1]</td>
+                        <td align="right"><a asp-action="delete" asp-route-key="@temp[0]">删除</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+                @Html.Pager(Model, new PagerOptions
+                {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+                })
+            </div>
+        </div>
+    </div>
+</div>

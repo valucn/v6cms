@@ -1,0 +1,58 @@
+﻿@model ip_address_entity
+@{
+    ViewData["Title"] = "添加IP地址";
+    var ip_type_list = Html.GetEnumSelectList<ip_type_enum>();
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="create" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP开始</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="ip_start" lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP结束</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="ip_end" lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP类型</label>
+                    <div class="layui-input-block">
+                        <v6cms-radio asp-items="@ip_type_list" asp-for="ip_type" asp-selected-value="1"></v6cms-radio>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="remark" lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">添加</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

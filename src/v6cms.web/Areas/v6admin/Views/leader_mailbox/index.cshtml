@@ -1,0 +1,125 @@
+@model PagedList<leader_mailbox_entity>
+@{
+    ViewData["Title"] = "领导信箱";
+}
+<div class="layui-card">
+    <div class="layui-card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="layui-card-body">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>
+                        领导
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.guest_name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.guest_unit)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.guest_email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.guest_mobile)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.mail_type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.reply_type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.content)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.create_time)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.reply_content)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.reply_time)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="13" style="text-align: center;">
+                            <div class="layui-inline">--没有记录--</div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.user.real_name
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.guest_name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.guest_unit)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.guest_email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.guest_mobile)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.mail_type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.reply_type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.content)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.create_time)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.reply_content)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.reply_time)
+                        </td>
+                        <td style="text-align: right;">
+                            @*<a asp-action="edit" asp-route-id="@item.id">修改</a> |*@
+                            <a asp-action="reply" asp-route-id="@item.id">回复</a> |
+                            <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align: center;padding: 16px 0 12px 0;">
+            <div class="layui-inline">
+            @Html.Pager(Model, new PagerOptions
+            {
+                PageIndexParameterName = "page",
+                TagName = "ul",
+                CssClass = "pagination",
+                CurrentPagerItemTemplate = "<li class=\"page-item active\"><a  class=\"page-link\" href=\"javascript:void(0);\">{0}</a></li>",
+                DisabledPagerItemTemplate = "<li class=\"page-item disabled\"><a class=\"page-link\">{0}</a></li>",
+                PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
+                PagerItemCssClass = "page-link",
+                Id = "bootstrappager"
+            })
+            </div>
+        </div>
+    </div>
+</div>

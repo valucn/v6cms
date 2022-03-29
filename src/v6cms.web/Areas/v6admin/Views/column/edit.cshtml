@@ -1,0 +1,253 @@
+@model column_entity
+@{
+    ViewData["Title"] = "修改网站栏目";
+}
+@section Scripts{
+<script src="~/js/xm-select.js"></script>
+<script>
+
+    //立即执行函数
+    $(function () {
+        $.ajax({
+            url:"/v6admin/api/column_api/get_list",
+            data: {
+                show_root: "true"
+            },
+            success: function(data){
+                var parent_id = xmSelect.render({
+                    el: '#parent_id',
+                    name: 'parent_id',
+                    height: '380px',
+                    layVerify: 'required',
+                    filterable: true,
+                    clickClose: true,//选中关闭
+                    radio: true,//单选模式
+                    tree: {
+                        strict: false,//非严格模式
+                        show: true,
+                        showFolderIcon: true,
+                        showLine: true,
+                        indent: 20,
+                        expandedKeys: true,
+                    },
+                    data: data
+                });
+
+                parent_id.setValue([ @Model.parent_id ]);
+            }
+        });
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        父级栏目
+                    </label>
+                    <div class="layui-input-inline">
+                        <div id="parent_id" class="xm-select-demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        栏目名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_name" class="layui-input" lay-verify="required">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">简称</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="column_name_abbr" class="layui-input" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">路由值</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="route_value" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="article_route" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="article_route" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="list_view_path" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="list_view_path" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="details_view_path" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="details_view_path" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="html_template" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="html_template" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="html_path_rule" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="html_path_rule" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签</label>
+                <div class="layui-input-block">
+                    <input asp-for="is_need_review" title="发布文章需要审核">
+                    <input asp-for="is_limit_ip" title="限制ip">
+                    <input asp-for="is_show_nav" title="导航显示">
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="list_option" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<list_option_enum>()" asp-for="list_option">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label asp-for="column_attribute" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<column_attribute_enum>()" asp-for="column_attribute">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label class="layui-form-label">外部链接</label>
+                    <div class="layui-input-block">
+                        <input asp-for="external_link" lay-verify="title" lay-verify="required" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            @{
+                var target_list = new List<SelectListItem>()
+            {
+            new SelectListItem() { Text = "本窗口", Value = "", Selected = true },
+            new SelectListItem() { Text = "新窗口", Value = "_blank"}
+            };
+            }
+            <div class="layui-form-item">
+                <label class="layui-form-label">打开窗口</label>
+                <div class="layui-input-block">
+                    <v6cms-radio asp-items="@target_list" asp-for="target"></v6cms-radio>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        排序
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="sort_rank" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        分值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="score" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        公安部分值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="score_gab" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        省厅分值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="score_province" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        市局分值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="score_city" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="layui-font-red">*</span>
+                        分局分值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input asp-for="score_branch" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label class="layui-form-label">栏目介绍</label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="intro" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+﻿@inject IDataService _service
+@{
+    int article_id = Html.get_route_int("id");
+
+    var article = _service.get_article_details(article_id);
+    var column = _service.get_column_details(article.column_id, cache_seconds: 10);
+
+    bool ip_white = true;
+    if (article.is_limit_ip)
+    {
+        ip_white = false;
+        string current_ip = Html.current_ip();
+        var ip_list = _service.get_ip_address(ip_type_enum.IP白名单);
+        foreach (var ip in ip_list)
+        {
+            ip_white = ip_tool.IpAddressInRange(current_ip, ip.ip_start, ip.ip_end);
+            if (ip_white)
+            {
+                break;
+            }
+        }
+    }
+
+    ViewData["Title"] = article.title;
+}
+@section Scripts{
+<script type="text/javascript">
+    $(function(){
+        $("#leader_comment").on("submit",function(){
+            $.ajax({
+                url: "/api/comment_api/post",
+                type: "post",
+                data: {
+                    article_id: "@article.id",
+                    password: $("#password").val(),
+                    comment_content: $("#comment_content").val()
+                },
+                success: function(res){
+                    alert(res.msg);
+                    if(res.code == 200) {
+                        location.reload();
+                    }
+                }
+            });
+            return false;
+        });
+
+        var $lb_clicks = $("#lb_clicks");
+        $.get("/api/article_api/update_views",
+            { column_id: @article.column_id, article_id: @article.id },
+            function (data) {
+                $lb_clicks.text(data);
+            }
+        );
+    });
+</script>
+}
+<div class="clearfix navbar-clear"></div>
+<div class="m2ban" style="padding: 3px 0px 20px;">
+    <div class="container clearfix">
+        <p class="wow fadeInUp">
+            @foreach (var item in column.parent_list)
+            {
+                string url;
+                if (string.IsNullOrEmpty(item.route_value))
+                {
+                    url = $"/column/article_list/{item.id}";
+                }
+                else
+                {
+                    url = $"/{item.route_value}";
+                }
+                <a href="@url">@item.column_name</a>
+            }
+            <a href="/column/article_list/@column.id">@column.column_name</a>
+        </p>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="card-box">
+        @if (!ip_white)
+        {
+            <h2>本文限制IP访问</h2>
+        }
+        else
+        {
+            <div class="news-content-box">
+                <h1 class="my-3 text-center">@article.title</h1>
+                <h4 class="text-center">
+                    发布时间：<span>@article.create_time.ToString("yyyy-MM-dd")</span>
+                    <span class="clicks-box">查看：<span id="lb_clicks"><i class="fa fa-spinner fa-pulse"></i></span></span>
+                </h4>
+                <hr />
+                <div class="m-3 py-3" style="line-height: 28px; font-size: 16px;">
+                    @if (string.IsNullOrEmpty(article.leader_comment_content))
+                    {
+                        <a class="btn btn-primary btn-rounded w-lg" style="padding: 10px 85px;" onclick="layer.open({type: 1,title: '评论',shadeClose: true,shade: 0.8,area: ['680px', '50%'],content: $('#comment_div')});">
+                            评论
+                        </a>
+                        <div id="comment_div" style="display: none;">
+                            <div style="padding: 20px;">
+                                <form id="leader_comment" method="post">
+                                    <div>姓名：<input id="password" name="password" required="required" /></div>
+                                    <div>评论：<textarea id="comment_content" name="comment_content" required="required"></textarea></div>
+                                    <div><button type="submit" class="el-button el-button--primary el-button--small">评论</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <div>评论内容：@article.leader_comment_content</div>
+                            <div style="text-align:right;">
+                                @article.leader_name
+                                <br />
+                                @article.leader_comment_time
+                            </div>
+                        </div>
+                    }
+                    <div class="content">
+                        @Html.Raw(article.article_content.content)
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

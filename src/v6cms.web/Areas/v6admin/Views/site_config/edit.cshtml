@@ -1,0 +1,105 @@
+@model site_config_entity
+@{
+    ViewData["Title"] = "修改网站配置";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="site_name" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="site_name" class="layui-input" lay-verify="required" />
+                        <span asp-validation-for="site_name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="site_color" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <select asp-for="site_color">
+                            <option value="colour">彩色</option>
+                            <option value="gray">黑白</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="keywords" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="keywords" class="layui-textarea"></textarea>
+                        <span asp-validation-for="keywords" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="description" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="description" class="layui-textarea"></textarea>
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="site_url" class="layui-form-label">
+                        网站地址
+                        <br />不以/结尾
+                    </label>
+                    <div class="layui-input-block">
+                        <input asp-for="site_url" class="layui-input" lay-verify="required" />
+                        <span asp-validation-for="site_url" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="icp" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="icp" class="layui-input" />
+                        <span asp-validation-for="icp" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="comment_top_days" class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input asp-for="comment_top_days" class="layui-input" />
+                        <span asp-validation-for="comment_top_days" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="copyright" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="copyright" class="layui-textarea"></textarea>
+                        <span asp-validation-for="copyright" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="count_code" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="count_code" class="layui-textarea"></textarea>
+                        <span asp-validation-for="count_code" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

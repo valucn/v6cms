@@ -1,0 +1,24 @@
+﻿@inject data_service _service
+@{
+    int article_id = Html.get_route_int("id");
+    var article = await _service.get_article_details(article_id);
+    var column = await _service.get_column_details(article.column_id);
+
+    ViewData["Title"] = article.title;
+}
+<div class="container">
+    <h2>政工的模板内容页：@article.title</h2>
+    <table class="table table-bordered">
+        <tr>
+            <td>
+                栏目：@column.column_name - 发布：@article.create_time
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @article.content
+            </td>
+        </tr>
+    </table>
+</div>

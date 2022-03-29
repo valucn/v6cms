@@ -1,0 +1,239 @@
+@model advertisement_entity
+@{
+    ViewData["Title"] = "修改广告";
+}
+@section Scripts{
+<script>
+    layui.use(['upload'], function(){
+        var laydate = layui.laydate
+        ,upload = layui.upload;
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            ,type: 'datetime'
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test-upload-one'
+            ,url: '/v6admin/upload?module=advertisement'
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#test-upload-one-img').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //上传完毕
+                if(res.code == 200) {
+                    $("#pic").val(res.data.path);
+                    return layer.msg('上传成功');
+                }
+                else {
+                    return layer.msg('上传失败');
+                }
+            }
+            ,error: function(){
+            }
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '#test-upload-more'
+            ,url: '/v6admin/upload?module=advertisement&batch=ad&source_id=' + $("#id").val()
+            ,multiple: true
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    var str = '<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"  style="max-width: 480px;max-height: 360px;" /> ';
+                    $('#test-upload-more-list').append(str);
+                });
+            }
+            ,done: function(res){
+                //上传完毕
+                if(res.code == 200) {
+                    var pic_list = $("#pic_list").val();
+                    if (pic_list == "") {
+                        $("#pic_list").val(res.data.path);
+                    } else {
+                        pic_list += ',' + res.data.path;
+                        $("#pic_list").val(pic_list);
+                    }
+                    return layer.msg('上传成功');
+                }
+                else {
+                    return layer.msg('上传失败');
+                }
+            }
+        });
+    });
+
+    $(function(){
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+
+        $(".delete").on("click",function(){
+            if(confirm('确认删除吗？')){
+                var pic_list_id = $(this).data("pic_list_id");
+                if(pic_list_id !== undefined)
+                {
+                    //删除记录
+                    $.ajax({
+                        url: "/v6admin/advertisement/delete_pic_list",
+                        data:{
+                            pic_list_id: $(this).data("pic_list_id"),
+                            ad_id: $(this).data("ad_id")
+                        },
+                        success: function(res){
+                            layer.msg(res.msg);
+                            setTimeout("location.reload()", 3000);
+                        }
+                    });
+                }
+                //删除图片
+                $.ajax({
+                    url: "/v6admin/upload/delete",
+                    data:{
+                        "module": "link",
+                        "source_id": $(this).data("id"),
+                        "file_path": $(this).data("file_path"),
+                    },
+                    success:function(res){
+                        layer.msg(res.msg);
+                        if(res.code == 200){
+                            $("#pic").val("");
+                            $('#test-upload-one-img').attr('src', ""); //图片链接（base64）
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form asp-action="edit" class="layui-form">
+            <input asp-for="id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="ad_name" class="layui-form-label">广告名称</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="ad_name" class="layui-input" lay-verify="required" />
+                        <span asp-validation-for="ad_name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">广告类型</label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<ad_type_enum>()" asp-for="ad_type">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="view_time_limit" class="layui-form-label">时间限制</label>
+                    <div class="layui-input-inline">
+                        <select asp-items="@Html.GetEnumSelectList<view_time_limit_enum>()" asp-for="view_time_limit">
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label asp-for="end_time" class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input asp-for="end_time" type="text" asp-format="{0:yyyy-MM-dd HH:mm:ss}" class="layui-input" autocomplete="off" />
+                        <span asp-validation-for="end_time" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label asp-for="text" class="layui-form-label">广告文字</label>
+                    <div class="layui-input-block">
+                        <input asp-for="text" class="layui-input" />
+                        <span asp-validation-for="text" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="url" class="layui-form-label">链接地址</label>
+                    <div class="layui-input-block">
+                        <input asp-for="url" class="layui-input" />
+                        <span asp-validation-for="url" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">广告图片</label>
+                <div class="layui-input-block">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="test-upload-one">
+                            <i class="layui-icon">&#xe67c;</i>
+                            上传图片
+                        </button>
+                        <input type="hidden" asp-for="pic" />
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                            预览图：
+                            <div class="layui-upload-list">
+                                <div class="imgDiv">
+                                    <img class="layui-upload-img" id="test-upload-one-img" style="max-width: 480px;max-height: 360px;" src="@Model.pic" />
+                                    <a href="###" class="delete" data-ad_id="@Model.id" data-file_path="@Model.pic"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                                </div>
+                            </div>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">幻灯图片集</label>
+                <div class="layui-input-block">
+                    <div class="layui-upload">
+                        <input type="hidden" asp-for="pic_list" />
+                        <button type="button" class="layui-btn" id="test-upload-more">
+                            <i class="layui-icon">&#xe67c;</i>
+                            多图片上传
+                        </button>
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                            预览图：
+                            <div class="layui-upload-list" id="test-upload-more-list">
+                                @if (Model.pic_list != null)
+                                {
+                                    foreach (var item in Model.pic_list)
+                                    {
+                                        <hr />
+                                        <div class="imgDiv">
+                                            <img style="max-width: 480px;max-height: 360px;" src="@item.pic" />
+                                            <a href="###" class="delete" data-pic_list_id="@item.id" data-ad_id="@Model.id" data-file_path="@item.pic"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
