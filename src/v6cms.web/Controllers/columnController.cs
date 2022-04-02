@@ -25,7 +25,7 @@ namespace v6cms.web.Controllers
             if (column == null)
             {
                 ViewData["msg"] = "分类不存在";
-                return View("_not_found");
+                return View("_notice");
             }
             if (!string.IsNullOrEmpty(column.list_view_path))
             {

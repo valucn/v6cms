@@ -57,10 +57,13 @@ namespace v6cms.web.Areas.member.Controllers
                 username = model.username,
                 password = password,
                 nick_name = model.nick_name,
+                real_name = model.real_name,
                 company = model.company,
                 mobile = model.mobile,
+                member_question1 = model.member_question1,
+                member_answer1 = model.member_answer1,
                 reg_time = DateTime.Now,
-                reg_ip = ip
+                reg_ip = ip,
             };
             _context.member.Add(member);
             await _context.SaveChangesAsync();

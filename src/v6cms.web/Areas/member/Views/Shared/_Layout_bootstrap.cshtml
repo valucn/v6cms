@@ -1,21 +1,83 @@
-﻿<!DOCTYPE html>
+﻿@inject IDataService _service
+@{
+    var site_config = _service.get_site_config();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - 骏蝶CRM系统</title>
+    <title>@ViewData["Title"] - @site_config.site_name - v6cms</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="/lib/bootstrap-select/1.13.14/dist/css/bootstrap-select.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link type="text/css" rel="stylesheet" href="/templates/jzzd/css/ask.css" />
+
     @RenderSection("header", required: false)
 </head>
-<body>
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center">
-            &copy; 2022 - v6cms内容管理系统
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/ask">
+                <img src="/templates/jzzd/images/logo_fl.png" style="width:25px; height:30px;" />&nbsp;&nbsp;南京经侦法律咨询平台
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar" style="flex-grow:0;">
+                <a href="/ask/new_question" class="btn btn-warning color_white margin_rl_30">我要提问</a>
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    @if (ViewBag.member_id > 0)
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link box_relative" href="/member/my_ask">
+                                <img src="/templates/jzzd/images/tixing.png" style="width:20px; height:20px;" />
+                                @if (ViewBag.new_reply > 0)
+                                {
+                                    <sapn class="shu_zhi">@ViewBag.new_reply</sapn>
+                                }
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/member">个人中心</a>
+                        </li>
+                        @*<li class="nav-item active">
+                            <a class="nav-link" href="/member/ask_comment">我的评论</a>
+                        </li>*@
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/member/edit_password">修改密码</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/member/logout">退出</a>
+                        </li>
+                        <li class="nav-item active">
+                            <span class="nav-link">@User.Identity.Name</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/member/login">登录</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/member/reg">注册</a>
+                        </li>
+                        <li class="nav-item active">
+                            <span class="nav-link">游客</span>
+                        </li>
+                    }
+                    <li><img src="/templates/jzzd/images/touxiang.png" style="width:30px; height:30px;" /></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <p></p>
+    @RenderBody()
+
+    <footer class="border-top footer text-muted bg-light">
+        <div class="container text-center" style="padding:15px 0px;">
+            &copy; 2022 - 法律咨询平台 - <a href="/v6admin" target="_blank">后台管理</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

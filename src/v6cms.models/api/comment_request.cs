@@ -6,9 +6,14 @@
     public class comment_request
     {
         /// <summary>
-        /// 文章id
+        /// 模块：文章=article, 问答=ask
         /// </summary>
-        public int article_id { get; set; }
+        public string module { get; set; }
+
+        /// <summary>
+        /// 资源id
+        /// </summary>
+        public int source_id { get; set; }
 
         /// <summary>
         /// 用户名

@@ -7,13 +7,13 @@ using v6cms.entities.enums;
 namespace v6cms.entities
 {
     /// <summary>
-    /// 答疑表
+    /// 问答表
     /// </summary>
     [Table("T_ask")]
     public class ask_entity
     {
         /// <summary>
-        /// 答疑id
+        /// 问答主键id
         /// </summary>
         [Key]
         public int id { get; set; }
@@ -53,6 +53,12 @@ namespace v6cms.entities
         /// </summary>
         [Display(Name = "是否通过审核")]
         public bool is_review { get; set; }
+
+        /// <summary>
+        /// 回复状态：未回复=0, 新回复=1, 回复已读=2
+        /// </summary>
+        [Display(Name = "回复状态")]
+        public reply_status_enum reply_status { get; set; }
 
         /// <summary>
         /// 关联会员表

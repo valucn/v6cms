@@ -38,6 +38,13 @@ namespace v6cms.entities
         public string nick_name { get; set; }
 
         /// <summary>
+        /// 真实姓名
+        /// </summary>
+        [Display(Name = "真实姓名")]
+        [MaxLength(20)]
+        public string real_name { get; set; }
+
+        /// <summary>
         /// 头像
         /// </summary>
         [Display(Name = "头像")]
@@ -84,5 +91,42 @@ namespace v6cms.entities
         /// </summary>
         [Display(Name = "会员级别")]
         public member_level_enum member_level { get; set; }
+
+        /// <summary>
+        /// 会员问题1
+        /// </summary>
+        [Display(Name = "会员问题1")]
+        public string member_question1 { get; set; }
+
+        /// <summary>
+        /// 会员回答1
+        /// </summary>
+        [Display(Name = "会员回答1")]
+        public string member_answer1 { get; set; }
+
+        /// <summary>
+        /// 会员问题2
+        /// </summary>
+        [Display(Name = "会员问题2")]
+        public string member_question2 { get; set; }
+
+        /// <summary>
+        /// 会员回答2
+        /// </summary>
+        [Display(Name = "会员回答2")]
+        public string member_answer2 { get; set; }
+
+        /// <summary>
+        /// 会员问题3
+        /// </summary>
+        [Display(Name = "会员问题3")]
+        public string member_question3 { get; set; }
+
+        /// <summary>
+        /// 会员回答3
+        /// </summary>
+        [Display(Name = "会员回答3")]
+        public string member_answer3 { get; set; }
+
     }
 }

@@ -13,8 +13,8 @@ namespace v6cms.web.Areas.member.Controllers
     {
         public async Task<IActionResult> index()
         {
-            await HttpContext.SignOutAsync("v6cms_member");
-            return RedirectToAction("index", "home");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("index", "home", new { area = "member" });
         }
     }
 }

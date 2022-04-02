@@ -5,7 +5,6 @@
 @section Scripts{
 <script src="~/js/xm-select.js"></script>
 <script>
-
     $(function(){
         $(".review").on("click",function(){
             var id = $(this).data("id");
@@ -16,17 +15,18 @@
                 },
                 success: function(res){
                     layer.msg(res.msg);
-                    setTimeout("location.reload();", 3000);
+                    setTimeout("location.reload()", 3000);
                 }
             });
         });
 
         $.ajax({
-            url:"/v6admin/api/column_api/get_list",
+            url:"/v6admin/api/column_api/get_list?show_all=true",
             success: function(data){
                 var demo1 = xmSelect.render({
                     el: '#demo1',
                     name: 'column_id',
+                    height: '380px',
                     filterable: true,
                     clickClose: true,//选中关闭
                     radio: true,//单选模式
@@ -41,7 +41,7 @@
                     },
                     data: data
                 });
-                demo1.setValue([ @ViewData["column_id"] ]);
+                demo1.setValue([ @ViewBag.column_id ]);
             }
         });
     });

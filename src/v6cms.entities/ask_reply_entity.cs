@@ -13,7 +13,7 @@ namespace v6cms.entities
     public class ask_reply_entity
     {
         /// <summary>
-        /// 答疑回复id
+        /// 答疑回复主键id
         /// </summary>
         [Key]
         public int id { get; set; }

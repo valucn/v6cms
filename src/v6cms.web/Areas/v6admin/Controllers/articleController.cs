@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -41,13 +42,13 @@ namespace v6cms.web.Areas.v6admin.Controllers
         /// 文章列表
         /// </summary>
         [admin_role_filter(authority_code = "article/index")]
-        public async Task<IActionResult> index(int? column_id, string keyword, int page = 1)
+        public async Task<IActionResult> index(string keyword, int column_id = 0, int page = 1)
         {
+            ViewData["column_id"] = column_id;
             ViewData["keyword"] = keyword;
 
             //获取上次访问页面
-            string last_visit_url = Request.GetDisplayUrl();
-            HttpContext.Response.Cookies.Append("last_visit_url", last_visit_url);
+            HttpContext.Response.Cookies.Append("last_visit_url", Request.GetDisplayUrl());
 
             string user_id_str = HttpContext.User.FindFirstValue("user_id");
             int user_id = int.Parse(user_id_str);
@@ -70,9 +71,8 @@ namespace v6cms.web.Areas.v6admin.Controllers
                     query = _context.article.FromSqlRaw($"SELECT * FROM T_article WHERE title LIKE '%{keyword}%' OR CONTAINS(content_nohtml, '{keyword}')", parameters);
                 }
             }
-            if (column_id.HasValue)
+            if (column_id > 0)
             {
-                ViewData["column_id"] = column_id;
                 query = query.Where(m => m.column_id == column_id || m.sub_column.Contains($",{column_id.ToString()},"));
             }
             if (role.data_range == data_range_enum.仅本人数据权限)
@@ -95,12 +95,16 @@ namespace v6cms.web.Areas.v6admin.Controllers
         {
             //获取上次访问页面
             HttpContext.Response.Cookies.Append("last_visit_url", Request.GetDisplayUrl());
+            //获取上次选择的栏目id
+            HttpContext.Request.Cookies.TryGetValue("last_column_id", out string last_column_id_str);
+            int.TryParse(last_column_id_str, out int column_id);
 
             var article_snow_id = YitIdHelper.NextId();
 
             var model = new article_entity
             {
                 article_snow_id = article_snow_id,
+                column_id = column_id,
                 publish_time = DateTime.Now,
                 views = 1
             };
@@ -147,7 +151,21 @@ namespace v6cms.web.Areas.v6admin.Controllers
                 model.create_time = DateTime.Now;
                 _context.Add(model);
                 //保存得到文章主键id
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    string msg2 = ex.InnerException.Message;
+                    if (msg2.Contains("插入重复键"))
+                    {
+                        msg2 = $"文章id（{model.article_snow_id}）重复了，请更换";
+                    }
+                    ViewData["msg"] = "保存文章失败";
+                    ViewData["msg2"] = msg2;
+                    return View("_notice");
+                }
                 //保存文章内容
                 _context.article_content.Add(new article_content_entity
                 {
@@ -185,11 +203,21 @@ namespace v6cms.web.Areas.v6admin.Controllers
                 {
                     string html_template = column.html_template;
                     string html_path_rule = column.html_path_rule;
+                    if (string.IsNullOrEmpty(html_template) || string.IsNullOrEmpty(html_path_rule))
+                    {
+                        ViewData["msg"] = "文章内容已保存成功";
+                        ViewData["msg2"] = "但是栏目的HTML模板和生成静态页面路径规则为空";
+                        return View("_notice");
+                    }
                     create_html_bll chtml = new create_html_bll(_context);
                     chtml.create_html(model.id, html_template, html_path_rule);
                 }
+                //获取上次选中的栏目
+                HttpContext.Response.Cookies.Append("last_column_id", model.column_id.ToString());
                 return RedirectToAction(nameof(index));
             }
+            //获取上次访问页面
+            HttpContext.Response.Cookies.Append("last_visit_url", Request.GetDisplayUrl());
 
             return View(model);
         }
@@ -377,6 +405,7 @@ namespace v6cms.web.Areas.v6admin.Controllers
             _cache.Remove($"article_details_{id}_cache");
             //删除文章
             await _context.article.Where(m => m.id == id).DeleteFromQueryAsync();
+            await _context.article_content.Where(m => m.article_id == id).DeleteFromQueryAsync();
             return RedirectToAction(nameof(index));
         }
 

@@ -69,6 +69,12 @@ namespace v6cms.entities
         public string content { get; set; }
 
         /// <summary>
+        /// 栏目图片
+        /// </summary>
+        [Display(Name = "栏目图片")]
+        public string pic { get; set; }
+
+        /// <summary>
         /// 列表页视图路径
         /// </summary>
         [Display(Name = "列表页视图路径")]
@@ -115,6 +121,12 @@ namespace v6cms.entities
         /// </summary>
         [Display(Name = "打开窗口")]
         public string target { get; set; }
+
+        /// <summary>
+        /// 是否推荐
+        /// </summary>
+        [Display(Name = "是否推荐")]
+        public bool is_recommend { get; set; }
 
         /// <summary>
         /// 是否显示在导航栏

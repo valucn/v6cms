@@ -49,9 +49,10 @@
         //, toolbars: [
         //    ['fontsize', '|', 'blockquote', 'horizontal', '|', 'removeformat', '|', 'link', 'unlink', '|', 'insertvideo', 'insertimage', 'attachment' , '|', 'wordimage', 'fullscreen'],
         //    ['bold', 'italic', 'underline', 'forecolor', 'backcolor', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight', '|', 'insertorderedlist', 'insertunorderedlist', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|', 'print', 'preview', 'source']
-        //]//仿微信编辑器
+        //]
+        //仿微信编辑器
         , toolbars: [
-            ['source', '|', 'fontsize', '|', 'removeformat', '|', 'bold', 'italic', 'underline', 'forecolor', 'backcolor', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', '|', 'link', 'unlink', '|', 'simpleupload', '|', 'insertimage', 'wordimage']
+            ['source', '|', 'fontsize', '|', 'removeformat', '|', 'bold', 'italic', 'underline', 'forecolor', 'backcolor', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', '|', 'link', 'unlink', '|', 'simpleupload', 'insertimage', '|', 'autotypeset', 'wordimage']
         ]//论坛专用
 
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准

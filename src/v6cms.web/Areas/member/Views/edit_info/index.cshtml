@@ -1,0 +1,90 @@
+﻿@model member_entity
+@{
+    Layout = "../Shared/_Layout_bootstrap.cshtml";
+    ViewData["Title"] = "修改个人信息";
+    ViewBag.menu_member_home = "active";
+}
+<div class="container">
+    <div class="card-header">
+        @ViewData["Title"]
+    </div>
+    <p></p>
+    <div class="row">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills">
+                @Html.Partial("_left_menu")
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                <form method="post">
+                    <div class="form-group row">
+                        <label asp-for="username" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control-plaintext" asp-for="username" readonly="readonly" />
+                        </div>
+                    </div>
+                    @*<div class="form-group row">
+                        <label asp-for="nick_name" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" asp-for="nick_name" />
+                        </div>
+                        </div>*@
+                    <div class="form-group row">
+                        <label asp-for="real_name" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" asp-for="real_name" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="company" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" asp-for="company" required="required">
+                                <option value="">选择您的单位</option>
+                                <option>经侦支队</option>
+                                <option>江北新区分局</option>
+                                <option>秦淮分局</option>
+                                <option>鼓楼分局</option>
+                                <option>雨花分局</option>
+                                <option>江宁分局</option>
+                                <option>玄武分局</option>
+                                <option>建邺分局</option>
+                                <option>栖霞分局</option>
+                                <option>浦口分局</option>
+                                <option>六合分局</option>
+                                <option>高淳分局</option>
+                                <option>溧水分局</option>
+                                <option>其他部门</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="mobile" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="mobile" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="reg_time" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" asp-for="reg_time" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="reg_ip" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" asp-for="reg_ip" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <span class="text-danger">@ViewData["msg"]</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

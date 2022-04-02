@@ -61,7 +61,7 @@ namespace v6cms.web.Areas.member.Controllers
             var identity = new ClaimsIdentity("v6cms_member");
             identity.AddClaim(new Claim(ClaimTypes.Name, model.username));
             identity.AddClaim(new Claim("member_id", member.id.ToString()));
-            identity.AddClaim(new Claim("user_real_name", member.nick_name));
+            //identity.AddClaim(new Claim("member_nick_name", member.nick_name));
 
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
 

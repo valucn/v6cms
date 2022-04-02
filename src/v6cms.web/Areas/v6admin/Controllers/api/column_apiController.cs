@@ -116,7 +116,7 @@ namespace v6cms.web.Areas.v6admin.Controllers.api
         [admin_role_filter(authority_code = "column/index", is_ajax = true)]
         public async Task<List<xm_select_response>> get_list(bool show_root = false, bool show_all = false)
         {
-            string cache_key = "sys_api_column_list_json";
+            string cache_key = $"sys_api_column_list_json_{show_root}_{show_all}";
             var cache_list = _cache.Get<List<xm_select_response>>(cache_key);
             if (cache_list != null)
             {

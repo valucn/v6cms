@@ -80,19 +80,19 @@ namespace v6cms.utils.premission
             member_manager.Add(new authority_role_model.authority_model { key = "member_manager/edit", name = "修改会员" });
             member_manager.Add(new authority_role_model.authority_model { key = "member_manager/delete", name = "删除会员" });
 
-            //答疑管理
+            //问答管理
             var ask = new List<authority_role_model.authority_model>();
-            ask.Add(new authority_role_model.authority_model { key = "ask/index", name = "答疑列表" });
-            ask.Add(new authority_role_model.authority_model { key = "ask/create", name = "添加答疑" });
-            ask.Add(new authority_role_model.authority_model { key = "ask/edit", name = "修改答疑" });
-            ask.Add(new authority_role_model.authority_model { key = "ask/delete", name = "删除答疑" });
+            ask.Add(new authority_role_model.authority_model { key = "ask/index", name = "问答列表" });
+            ask.Add(new authority_role_model.authority_model { key = "ask/create", name = "添加问答" });
+            ask.Add(new authority_role_model.authority_model { key = "ask/edit", name = "修改问答" });
+            ask.Add(new authority_role_model.authority_model { key = "ask/delete", name = "删除问答" });
 
-            //答疑回复管理
+            //问答回复管理
             var ask_reply = new List<authority_role_model.authority_model>();
-            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/index", name = "答疑回复列表" });
-            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/create", name = "添加答疑回复" });
-            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/edit", name = "修改答疑回复" });
-            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/delete", name = "删除答疑回复" });
+            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/index", name = "问答回复列表" });
+            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/create", name = "添加问答回复" });
+            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/edit", name = "修改问答回复" });
+            ask_reply.Add(new authority_role_model.authority_model { key = "ask_reply/delete", name = "删除问答回复" });
 
             //用户管理
             var user_manager = new List<authority_role_model.authority_model>();
@@ -171,7 +171,7 @@ namespace v6cms.utils.premission
             group.Add(new authority_role_model { role_name = "自身权限", authority_list = self });
             group.Add(new authority_role_model { role_name = "文章管理", authority_list = article });
             group.Add(new authority_role_model { role_name = "网站栏目", authority_list = column });
-            group.Add(new authority_role_model { role_name = "领导评论", authority_list = comment });
+            group.Add(new authority_role_model { role_name = "评论管理", authority_list = comment });
 
             group.Add(new authority_role_model { role_name = "生成html", authority_list = create_html });
 
@@ -188,8 +188,8 @@ namespace v6cms.utils.premission
             group.Add(new authority_role_model { role_name = "生日名单管理", authority_list = birthday_list });
 
             group.Add(new authority_role_model { role_name = "会员管理", authority_list = member_manager });
-            group.Add(new authority_role_model { role_name = "答疑管理", authority_list = ask });
-            group.Add(new authority_role_model { role_name = "答疑回复", authority_list = ask_reply });
+            group.Add(new authority_role_model { role_name = "问答管理", authority_list = ask });
+            group.Add(new authority_role_model { role_name = "问答回复", authority_list = ask_reply });
 
             group.Add(new authority_role_model { role_name = "用户管理", authority_list = user_manager });
             group.Add(new authority_role_model { role_name = "角色管理", authority_list = user_role });

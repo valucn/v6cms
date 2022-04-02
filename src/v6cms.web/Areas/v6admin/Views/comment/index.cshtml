@@ -18,13 +18,13 @@
                         @Html.DisplayNameFor(model => model.article.title)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.name)
+                        @Html.DisplayNameFor(model => model.comment_name)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.comment_content)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.comment_time)
+                        @Html.DisplayNameFor(model => model.create_time)
                     </th>
                     <th></th>
                 </tr>
@@ -48,13 +48,13 @@
                             <a href="/article/details/@item.article.id" target="_blank" class="layui-link">@item.article.title</a>
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.name)
+                            @Html.DisplayFor(modelItem => item.comment_name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.comment_content)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.comment_time)
+                            @Html.DisplayFor(modelItem => item.create_time)
                         </td>
                         <td align="right" width="70">
                             <a asp-action="edit" asp-route-id="@item.id">修改</a> |

@@ -260,11 +260,11 @@ namespace v6cms.services
         /// <summary>
         /// 获取栏目列表
         /// </summary>
-        /// <param name="ids">栏目主键id集合</param>
+        /// <param name="ids">栏目id集合</param>
         /// <param name="cache_name">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        public List<column_entity> get_column_list(int[] ids, string cache_name = "", int cache_seconds = 60000)
+        public List<column_entity> get_column_list(int[] ids, bool? is_recommend, string cache_name = "", int cache_seconds = 60000)
         {
             if (string.IsNullOrEmpty(cache_name))
             {
@@ -283,6 +283,10 @@ namespace v6cms.services
             {
                 query = query.Where(m => ids.Contains(m.id));
             }
+            if (is_recommend.HasValue)
+            {
+                query = query.Where(m => m.is_recommend == is_recommend.Value);
+            }
             var list = query.OrderBy(m => m.sort_rank).ThenByDescending(m => m.id).ToList();
             _cache.Set(cache_name, list, TimeSpan.FromSeconds(cache_seconds));
             return list;
@@ -291,26 +295,31 @@ namespace v6cms.services
         /// <summary>
         /// 获取子栏目列表
         /// </summary>
-        /// <param name="id">当前栏目主键id</param>
-        /// <param name="cache_name">缓存名</param>
+        /// <param name="parent_id">父栏目id</param>
+        /// <param name="is_recommend">是否推荐</param>
+        /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        public List<column_entity> get_column_child_list(int id, string cache_name = "", int cache_seconds = 60000)
+        public List<column_entity> get_column_child_list(int parent_id, bool? is_recommend = null, string cache_key = "", int cache_seconds = 60000)
         {
-            if (string.IsNullOrEmpty(cache_name))
+            if (string.IsNullOrEmpty(cache_key))
             {
-                cache_name = $"column_child_list_{id}_cache";
+                cache_key = $"column_child_list_{parent_id}_cache";
             }
 
-            var cache_value = _cache.Get<List<column_entity>>(cache_name);
+            var cache_value = _cache.Get<List<column_entity>>(cache_key);
             if (cache_value != null)
             {
                 return cache_value;
             }
 
-            var query = _context.column.Where(m => m.parent_id == id).AsQueryable();
+            var query = _context.column.Where(m => m.parent_id == parent_id).AsQueryable();
+            if (is_recommend.HasValue)
+            {
+                query = query.Where(m => m.is_recommend == is_recommend.Value);
+            }
             var list = query.OrderBy(m => m.sort_rank).ToList();
-            _cache.Set(cache_name, list, TimeSpan.FromSeconds(cache_seconds));
+            _cache.Set(cache_key, list, TimeSpan.FromSeconds(cache_seconds));
             return list;
         }
 
@@ -431,24 +440,26 @@ namespace v6cms.services
         /// 获取文章列表
         /// </summary>
         /// <param name="column_id">栏目id</param>
-        /// <param name="take">调用几条</param>
-        /// <param name="skip">跳过几条</param>
+        /// <param name="is_slide">是否幻灯</param>
         /// <param name="is_top">是否置顶</param>
+        /// <param name="is_best">是否精华</param>
         /// <param name="is_recommend">是否推荐</param>
         /// <param name="is_hot">是否热门</param>
         /// <param name="is_pic">是否图片</param>
+        /// <param name="skip">跳过几条</param>
+        /// <param name="take">调用几条</param>
         /// <param name="orderby_field">排序字段</param>
         /// <param name="orderby">排序</param>
         /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        public List<article_entity> get_article_list(int column_id = 0, int take = 10, int skip = 0, bool is_top = false,
-            bool is_recommend = false, bool? is_hot = null, bool? is_pic = null, string orderby_field = "publish_time",
+        public List<article_entity> get_article_list(int column_id = 0, bool? is_slide = null, bool? is_top = null, bool? is_best = null,
+            bool? is_recommend = null, bool? is_hot = null, bool? is_pic = null, int? skip = null, int take = 10, string orderby_field = "publish_time",
             string orderby = "desc", string cache_key = "", int cache_seconds = 6000)
         {
             if (string.IsNullOrEmpty(cache_key))
             {
-                cache_key = $"article_list_{column_id}_{take}_{skip}_{is_top}_{is_recommend}_{is_hot}_{is_pic}_{orderby_field}_{orderby}_cache";
+                cache_key = $"article_list_{column_id}_{is_slide}_{is_top}_{is_best}_{is_recommend}_{is_hot}_{is_pic}_{skip}_{take}_{orderby_field}_{orderby}_cache";
                 cache_key = cache_key.ToLower();
             }
             var cache_list = _cache.Get<List<article_entity>>(cache_key);
@@ -463,10 +474,12 @@ namespace v6cms.services
                 var column = _context.column.Where(m => m.id == column_id).FirstOrDefault();
                 if (column != null)
                 {
+                    //查询子栏目
                     var child = _context.column.Where(m => m.parent_id == column.id);
                     if (child != null)
                     {
-                        query = query.Where(m => (m.column_id == column_id || child.Select(m => m.id).Contains(m.column_id) || m.sub_column.Contains(column_id.ToString())));
+                        query = query.Where(m => (m.column_id == column_id || child.Select(m => m.id).Contains(m.column_id)
+                            || m.sub_column.Contains(column_id.ToString())));
                     }
                     else
                     {
@@ -474,13 +487,21 @@ namespace v6cms.services
                     }
                 }
             }
-            if (is_top)
+            if (is_slide.HasValue)
             {
-                query = query.Where(m => m.is_top);
+                query = query.Where(m => m.is_slide == is_slide.Value);
             }
-            if (is_recommend)
+            if (is_top.HasValue)
             {
-                query = query.Where(m => m.is_recommend);
+                query = query.Where(m => m.is_top == is_top.Value);
+            }
+            if (is_best.HasValue)
+            {
+                query = query.Where(m => m.is_best == is_best.Value);
+            }
+            if (is_recommend.HasValue)
+            {
+                query = query.Where(m => m.is_recommend == is_recommend.Value);
             }
             if (is_hot.HasValue)
             {
@@ -490,7 +511,13 @@ namespace v6cms.services
             {
                 query = query.Where(m => m.is_pic == is_pic.Value);
             }
-            var list = query.Include(m => m.column).OrderByD(orderby_field, orderby).Take(take).Skip(skip).ToList();
+            query = query.Include(m => m.column).OrderByD(orderby_field, orderby);
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+            query = query.Take(take);
+            var list = query.ToList();
             _cache.Set(cache_key, list, TimeSpan.FromSeconds(cache_seconds));
             return list;
         }
@@ -499,23 +526,27 @@ namespace v6cms.services
         /// 获取文章列表
         /// </summary>
         /// <param name="column_ids">栏目id集合</param>
-        /// <param name="take">调用几条</param>
+        /// <param name="is_slide">是否幻灯</param>
         /// <param name="is_top">是否置顶</param>
+        /// <param name="is_best">是否精华</param>
         /// <param name="is_recommend">是否推荐</param>
         /// <param name="is_hot">是否热门</param>
+        /// <param name="is_pic">是否图片</param>
+        /// <param name="skip">跳过几条</param>
+        /// <param name="take">调用几条</param>
         /// <param name="orderby_field">排序字段</param>
         /// <param name="orderby">排序</param>
         /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        public List<article_entity> get_article_list(int[] column_ids, int take, bool is_top = false,
-            bool is_recommend = false, bool is_hot = false, string orderby_field = "publish_time",
+        public List<article_entity> get_article_list(int[] column_ids, bool? is_slide = null, bool? is_top = null, bool? is_best = null,
+            bool? is_recommend = null, bool? is_hot = null, bool? is_pic = null, int? skip = null, int take = 10, string orderby_field = "publish_time",
             string orderby = "desc", string cache_key = "", int cache_seconds = 6000)
         {
             if (string.IsNullOrEmpty(cache_key))
             {
                 string column_ids_str = string.Join(',', column_ids);
-                cache_key = $"article_list_{column_ids_str}_{take}_{is_top}_{is_recommend}_{is_hot}_{orderby_field}_{orderby}_cache";
+                cache_key = $"article_list_{column_ids_str}_{is_slide}_{is_top}_{is_best}_{is_recommend}_{is_hot}_{is_pic}_{skip}_{take}_{orderby_field}_{orderby}_cache";
             }
             var cache_list = _cache.Get<List<article_entity>>(cache_key);
             if (cache_list != null)
@@ -524,15 +555,37 @@ namespace v6cms.services
             }
 
             var query = _context.article.Where(m => column_ids.Contains(m.column_id) && m.is_review).AsQueryable();
-            if (is_top)
+            if (is_slide.HasValue)
             {
-                query = query.Where(m => m.is_top);
+                query = query.Where(m => m.is_slide == is_slide.Value);
             }
-            if (is_recommend)
+            if (is_top.HasValue)
             {
-                query = query.Where(m => m.is_recommend);
+                query = query.Where(m => m.is_top == is_top.Value);
             }
-            var list = query.OrderByD(orderby_field, orderby).Take(take).ToList();
+            if (is_best.HasValue)
+            {
+                query = query.Where(m => m.is_best == is_best.Value);
+            }
+            if (is_recommend.HasValue)
+            {
+                query = query.Where(m => m.is_recommend == is_recommend.Value);
+            }
+            if (is_hot.HasValue)
+            {
+                query = query.Where(m => m.is_hot == is_hot.Value);
+            }
+            if (is_pic.HasValue)
+            {
+                query = query.Where(m => m.is_pic == is_pic.Value);
+            }
+            query = query.OrderByD(orderby_field, orderby).Include(m => m.column);
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+            query = query.Take(take);
+            var list = query.ToList();
             _cache.Set(cache_key, list, TimeSpan.FromSeconds(cache_seconds));
             return list;
         }
@@ -544,7 +597,8 @@ namespace v6cms.services
         /// <param name="page"></param>
         /// <param name="page_size"></param>
         /// <returns></returns>
-        public PagedList<article_entity> get_article_page(int column_id, int page = 1, int page_size = 15, string orderby_field = "publish_time", string orderby = "desc")
+        public PagedList<article_entity> get_article_page(int column_id, int page = 1, int page_size = 15,
+            string orderby_field = "publish_time", string orderby = "desc")
         {
             var query = _context.article.Where(m => m.is_review).AsQueryable();
 
@@ -644,15 +698,16 @@ namespace v6cms.services
         /// <summary>
         /// 获取评论列表
         /// </summary>
-        /// <param name="article_id">文章id</param>
+        /// <param name="source_id">文章id</param>
+        /// <param name="module">模块：文章=article, 问答=ask</param>
         /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        public List<comment_entity> get_comment_list(int article_id, string cache_key = "", int cache_seconds = 6000)
+        public List<comment_entity> get_comment_list(int source_id, string module = "article", string cache_key = "", int cache_seconds = 6000)
         {
             if (string.IsNullOrEmpty(cache_key))
             {
-                cache_key = $"comment_list_{article_id}_cache";
+                cache_key = $"comment_list_{source_id}_{module}_cache";
             }
             var cache_list = _cache.Get<List<comment_entity>>(cache_key);
             if (cache_list != null)
@@ -660,7 +715,7 @@ namespace v6cms.services
                 return cache_list;
             }
 
-            var query = _context.comment.Where(m => m.article_id == article_id).AsQueryable();
+            var query = _context.comment.Where(m => m.source_id == source_id).AsQueryable();
             var list = query.OrderByDescending(m => m.id).ToList();
             _cache.Set(cache_key, list, TimeSpan.FromSeconds(cache_seconds));
             return list;

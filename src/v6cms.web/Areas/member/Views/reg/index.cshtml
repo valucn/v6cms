@@ -1,4 +1,4 @@
-﻿@model user_entity
+﻿@model member_entity
 @{
     Layout = null;
 }
@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>注册新用户</title>
+    <title>注册新会员</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -19,44 +19,88 @@
     <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
         <div class="layadmin-user-login-main">
             <div class="layadmin-user-login-box layadmin-user-login-header">
-                <h2>注册新用户</h2>
+                <h2>注册新会员</h2>
                 <p> </p>
             </div>
-            <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
-                    <input type="text" name="username" id="LAY-user-login-username" lay-verify="username" placeholder="用户名" class="layui-input">
+            <form onsubmit="return false;">
+                <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+                        <input type="text" name="username" id="LAY-user-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+                        <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码" class="layui-input">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-repass"></label>
+                        <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码" class="layui-input">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-face-smile-b" for="LAY-user-login-real_name"></label>
+                        <input type="text" name="real_name" id="LAY-user-login-real_name" lay-verify="required" placeholder="真实姓名" class="layui-input">
+                        </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-auz" for="LAY-user-login-company"></label>
+                        <select type="text" name="company" id="LAY-user-login-company" lay-verify="required" class="layui-input">
+                            <option value="">选择您的单位</option>
+                            <option>经侦支队</option>
+                            <option>江北新区分局</option>
+                            <option>秦淮分局</option>
+                            <option>鼓楼分局</option>
+                            <option>雨花分局</option>
+                            <option>江宁分局</option>
+                            <option>玄武分局</option>
+                            <option>建邺分局</option>
+                            <option>栖霞分局</option>
+                            <option>浦口分局</option>
+                            <option>六合分局</option>
+                            <option>高淳分局</option>
+                            <option>溧水分局</option>
+                            <option>其他部门</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-cellphone" for="LAY-user-login-mobile"></label>
+                        <input type="text" name="mobile" id="LAY-user-login-mobile" lay-verify="mobile" placeholder="联系电话" class="layui-input">
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-survey"></label>
+                        <select asp-for="member_question1" lay-verify="required" class="layui-input">
+                            <option value="">请选择密保问题</option>
+                            <option>你父亲的姓名？</option>
+                            <option>你母亲的姓名？</option>
+                            <option>你的生日？</option>
+                            <option>你配偶的生日？</option>
+
+                            <option>你最大的爱好？</option>
+                            <option>你喜欢看的电影？</option>
+                            <option>你最喜爱的歌曲？</option>
+                            <option>你最喜爱的食物？</option>
+
+                            <option>你的出生地？</option>
+                            <option>你小学校名是？</option>
+                            <option>你中学校名是？</option>
+                            <option>你大学校名是？</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-survey" for="member_answer1"></label>
+                        <input asp-for="member_answer1" placeholder="密保答案" lay-verify="required" class="layui-input">
+                    </div>
+                    <p style="color:#f00;"><strong>注意:</strong> 密保问题是用来找回密码时候使用，请您切记问题答案！</p>
+                    <div class="layui-form-item">
+                        <input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-member-reg-submit">提交注册</button>
+                    </div>
+                    <div class="layui-trans layui-form-item layadmin-user-login-other">
+                        <a href="/member/login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+                    </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
-                    <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码" class="layui-input">
-                </div>
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-repass"></label>
-                    <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码" class="layui-input">
-                </div>
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-face-smile-b" for="LAY-user-login-real_name"></label>
-                    <input type="text" name="real_name" id="LAY-user-login-real_name" lay-verify="real_name" placeholder="昵称" class="layui-input">
-                </div>
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-auz" for="LAY-user-login-company"></label>
-                    <input type="text" name="company" id="LAY-user-login-company" lay-verify="company" placeholder="单位" class="layui-input">
-                </div>
-                <div class="layui-form-item">
-                    <label class="layadmin-user-login-icon layui-icon layui-icon-cellphone" for="LAY-user-login-mobile"></label>
-                    <input type="text" name="mobile" id="LAY-user-login-mobile" lay-verify="mobile" placeholder="联系电话" class="layui-input">
-                </div>
-                <div class="layui-form-item">
-                    <input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>
-                </div>
-                <div class="layui-form-item">
-                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-member-reg-submit">提交注册</button>
-                </div>
-                <div class="layui-trans layui-form-item layadmin-user-login-other">
-                    <a href="/member/login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
-                </div>
-            </div>
+            </form>
         </div>
 
         <div class="layui-trans layadmin-user-login-footer">

@@ -33,4 +33,15 @@
 		<ProjectReference Include="..\v6cms.utils\v6cms.utils.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="Areas\member\Views\ask_comment\index.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\member\Views\Shared\_Layout_bootstrap.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
 </Project>

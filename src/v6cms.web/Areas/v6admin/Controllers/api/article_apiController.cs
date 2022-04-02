@@ -7,6 +7,9 @@ using v6cms.models.api;
 
 namespace v6cms.web.Areas.v6admin.Controllers.api
 {
+    /// <summary>
+    /// 文章管理接口控制器
+    /// </summary>
     [ApiController]
     [Route("v6admin/api/[controller]/[action]")]
     public class article_apiController : ControllerBase

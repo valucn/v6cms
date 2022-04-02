@@ -1,0 +1,85 @@
+@model member_entity
+@{
+    Layout = "../Shared/_Layout_bootstrap.cshtml";
+    ViewData["Title"] = "密保问题";
+    ViewBag.menu_qa = "active";
+}
+<div class="container">
+    <div class="card-header bg-primary text-white">
+        @ViewData["Title"]
+    </div>
+    <p></p>
+    <div class="row">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills">
+                @Html.Partial("_left_menu")
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                <form method="post">
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">问题</label>
+                        <div class="col-sm-6">
+                            <select asp-for="member_question1" class="form-control">
+                                <option>你父亲的姓名？</option>
+                                <option>你母亲的姓名？</option>
+                                <option>你的生日？</option>
+                                <option>你配偶的生日？</option>
+
+                                <option>你最大的爱好？</option>
+                                <option>你喜欢看的电影？</option>
+                                <option>你最喜爱的歌曲？</option>
+                                <option>你最喜爱的食物？</option>
+
+                                <option>你的出生地？</option>
+                                <option>你小学校名是？</option>
+                                <option>你中学校名是？</option>
+                                <option>你大学校名是？</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">回答1</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" asp-for="member_answer1" required="required" />
+                        </div>
+                    </div>
+                    @*<div class="form-group row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">问题2</label>
+                        <div class="col-sm-6">
+                            <select asp-for="member_question2" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">回答2</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" asp-for="member_answer2" required="required" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">问题3</label>
+                        <div class="col-sm-6">
+                            <select asp-for="member_question3" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">回答3</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" asp-for="member_answer3" required="required" />
+                        </div>
+                    </div>*@
+                    <div class="form-group row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <span class="text-danger">@ViewData["msg"]</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

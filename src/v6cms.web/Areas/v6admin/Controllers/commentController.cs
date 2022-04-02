@@ -83,12 +83,13 @@ namespace v6cms.web.Areas.v6admin.Controllers
                 {
                     await _context.comment.Where(m => m.id == id).UpdateFromQueryAsync(x => new comment_entity
                     {
-                        name = model.name,
+                        comment_name = model.comment_name,
                         comment_content = model.comment_content
                     });
 
                     //删除缓存
                     _cache.Remove($"article_details_{id}_cache");
+                    _cache.Remove($"comment_list_{model.source_id}_ask_cache");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -113,10 +114,14 @@ namespace v6cms.web.Areas.v6admin.Controllers
         [admin_role_filter(authority_code = "comment/delete")]
         public async Task<IActionResult> delete(int? id)
         {
+            //查询评论
+            var model = await _context.comment.Where(m => m.id == id).FirstOrDefaultAsync();
+            //删除评论
             await _context.comment.Where(m => m.id == id).DeleteFromQueryAsync();
 
             //删除缓存
             _cache.Remove($"article_details_{id}_cache");
+            _cache.Remove($"comment_list_{model.source_id}_ask_cache");
             return RedirectToAction(nameof(index));
         }
 

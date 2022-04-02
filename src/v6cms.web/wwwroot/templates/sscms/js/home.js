@@ -1,0 +1,1 @@
+﻿var ACCESS_TOKEN_NAME = "ss_cloud_access_token", $apiUrl = "https://api.sscms.com/v7/home", $rootUrl = "/home";

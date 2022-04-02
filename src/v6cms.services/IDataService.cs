@@ -66,20 +66,22 @@ namespace v6cms.services
         /// <summary>
         /// 获取栏目列表
         /// </summary>
-        /// <param name="ids">栏目主键id集合</param>
+        /// <param name="ids">栏目id集合</param>
+        /// <param name="is_recommend">是否推荐</param>
         /// <param name="cache_name">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        List<column_entity> get_column_list(int[] ids, string cache_name = "", int cache_seconds = 60000);
+        List<column_entity> get_column_list(int[] ids, bool? is_recommend, string cache_name = "", int cache_seconds = 60000);
 
         /// <summary>
         /// 获取子栏目列表
         /// </summary>
-        /// <param name="id">当前栏目主键id</param>
-        /// <param name="cache_name">缓存名</param>
+        /// <param name="parent_id">父栏目id</param>
+        /// <param name="is_recommend">是否推荐</param>
+        /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        List<column_entity> get_column_child_list(int id, string cache_name = "", int cache_seconds = 60000);
+        List<column_entity> get_column_child_list(int parent_id, bool? is_recommend = null, string cache_key = "", int cache_seconds = 60000);
 
         /// <summary>
         /// 获取栏目详情
@@ -112,36 +114,42 @@ namespace v6cms.services
         /// 获取文章列表
         /// </summary>
         /// <param name="column_id">栏目id</param>
-        /// <param name="take">调用几条</param>
-        /// <param name="skip">跳过几条</param>
+        /// <param name="is_slide">是否幻灯</param>
         /// <param name="is_top">是否置顶</param>
+        /// <param name="is_best">是否精华</param>
         /// <param name="is_recommend">是否推荐</param>
         /// <param name="is_hot">是否热门</param>
         /// <param name="is_pic">是否图片</param>
-        /// <param name="orderby_field">排序字段</param>
-        /// <param name="orderby">排序</param>
-        /// <param name="cache_name">缓存名</param>
-        /// <param name="cache_seconds">缓存时间</param>
-        /// <returns></returns>
-        List<article_entity> get_article_list(int column_id = 0, int take = 10, int skip = 0, bool is_top = false,
-            bool is_recommend = false, bool? is_hot = null, bool? is_pic = null, string orderby_field = "publish_time",
-            string orderby = "desc", string cache_name = "", int cache_seconds = 6000);
-
-        /// <summary>
-        /// 获取文章列表
-        /// </summary>
-        /// <param name="column_ids">栏目id集合</param>
+        /// <param name="skip">跳过几条</param>
         /// <param name="take">调用几条</param>
-        /// <param name="is_top">是否置顶</param>
-        /// <param name="is_recommend">是否推荐</param>
-        /// <param name="is_hot">是否热门</param>
         /// <param name="orderby_field">排序字段</param>
         /// <param name="orderby">排序</param>
         /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        List<article_entity> get_article_list(int[] column_ids, int take, bool is_top = false,
-            bool is_recommend = false, bool is_hot = false, string orderby_field = "publish_time",
+        List<article_entity> get_article_list(int column_id, bool? is_slide = null, bool? is_top = null, bool? is_best = null,
+            bool? is_recommend = null, bool? is_hot = null, bool? is_pic = null, int? skip = null, int take = 10, string orderby_field = "publish_time",
+            string orderby = "desc", string cache_key = "", int cache_seconds = 6000);
+
+        /// <summary>
+        /// 获取文章列表
+        /// </summary>
+        /// <param name="column_ids">栏目id集合</param>
+        /// <param name="is_slide">是否幻灯</param>
+        /// <param name="is_top">是否置顶</param>
+        /// <param name="is_best">是否精华</param>
+        /// <param name="is_recommend">是否推荐</param>
+        /// <param name="is_hot">是否热门</param>
+        /// <param name="is_pic">是否图片</param>
+        /// <param name="skip">跳过几条</param>
+        /// <param name="take">调用几条</param>
+        /// <param name="orderby_field">排序字段</param>
+        /// <param name="orderby">排序</param>
+        /// <param name="cache_key">缓存名</param>
+        /// <param name="cache_seconds">缓存时间</param>
+        /// <returns></returns>
+        List<article_entity> get_article_list(int[] column_ids, bool? is_slide = null, bool? is_top = null, bool? is_best = null,
+            bool? is_recommend = null, bool? is_hot = null, bool? is_pic = null, int? skip = null, int take = 10, string orderby_field = "publish_time",
             string orderby = "desc", string cache_key = "", int cache_seconds = 6000);
 
         /// <summary>
@@ -185,10 +193,11 @@ namespace v6cms.services
         /// 获取评论列表
         /// </summary>
         /// <param name="article_id">文章id</param>
+        /// <param name="module">模块：文章=article, 问答=ask</param>
         /// <param name="cache_key">缓存名</param>
         /// <param name="cache_seconds">缓存时间</param>
         /// <returns></returns>
-        List<comment_entity> get_comment_list(int article_id, string cache_key = "", int cache_seconds = 6000);
+        List<comment_entity> get_comment_list(int article_id, string module = "article", string cache_key = "", int cache_seconds = 6000);
 
         /// <summary>
         /// 获取ip地址列表

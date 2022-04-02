@@ -1,0 +1,47 @@
+@model comment_entity
+@{
+    ViewData["Title"] = "修改评论";
+}
+<div class="layui-card">
+    <div class="layui-card-header">@ViewData["Title"]</div>
+    <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" method="post" action="" lay-filter="component-form-group">
+            
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="ask.title" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input type="text" asp-for="ask.title" class="layui-input" readonly="readonly" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="comment_name" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input type="text" asp-for="comment_name" class="layui-input" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-md6">
+                    <label asp-for="comment_content" class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <textarea asp-for="comment_content" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-layout-admin">
+                <div class="layui-input-block">
+                    <div class="layui-footer" style="left: 0;">
+                        <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -2,6 +2,25 @@
 @{
     ViewData["Title"] = "会员管理";
 }
+@section Scripts{
+<script>
+    $(function(){
+        $(".review").on("click",function(){
+            var id = $(this).data("id");
+            $.ajax({
+                url: "/v6admin/api/member_api/review",
+                data: {
+                    "member_id": id
+                },
+                success: function(res){
+                    layer.msg(res.msg);
+                    setTimeout("location.reload()", 3000);
+                }
+            });
+        });
+    });
+</script>
+}
 <div class="layui-card">
     <div class="layui-card-header">
         @ViewData["Title"]
@@ -16,8 +35,11 @@
                     <th>
                         @Html.DisplayNameFor(model => model.username)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.nick_name)
+                    </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.real_name)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.company)
@@ -25,9 +47,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.mobile)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.card_id)
-                    </th>
+                    </th>*@
                     <th>
                         @Html.DisplayNameFor(model => model.is_lock)
                     </th>
@@ -47,7 +69,7 @@
                 @if (Model.Count() == 0)
                 {
                     <tr>
-                        <td colspan="11" style="text-align: center;">
+                        <td colspan="10" style="text-align: center;">
                             <div class="layui-inline">--没有记录--</div>
                         </td>
                     </tr>
@@ -61,8 +83,11 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.username)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.nick_name)
+                        </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.real_name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.company)
@@ -70,9 +95,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.mobile)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.card_id)
-                        </td>
+                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.is_lock)
                         </td>
@@ -87,6 +112,11 @@
                         </td>
                         <td style="text-align: right;">
                             <a asp-action="edit" asp-route-id="@item.id">修改</a> |
+                            @if (item.member_level == member_level_enum.注册会员)
+                            {
+                                <a href="###" class="review" data-id="@item.id">审核</a>
+                                <span>|</span>
+                            }
                             <a asp-action="delete" asp-route-id="@item.id" onclick="return confirm('确认删除吗？');">删除</a>
                         </td>
                     </tr>
@@ -95,8 +125,8 @@
         </table>
         <div style="text-align: center;padding: 16px 0 12px 0;">
             <div class="layui-inline">
-            @Html.Pager(Model, new PagerOptions
-            {
+                @Html.Pager(Model, new PagerOptions
+                {
                 PageIndexParameterName = "page",
                 TagName = "ul",
                 CssClass = "pagination",
@@ -105,7 +135,7 @@
                 PagerItemTemplate = "<li class=\"page-item\">{0}</li>",
                 PagerItemCssClass = "page-link",
                 Id = "bootstrappager"
-            })
+                })
             </div>
         </div>
     </div>

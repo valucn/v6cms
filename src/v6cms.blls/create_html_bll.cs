@@ -119,7 +119,15 @@ namespace v6cms.blls
                 var mat_flag = Regex.Match(attributes, "flag='(.*?)'");
                 string flag = mat_flag.Groups[1].Value;
 
-                int take = 8;
+                int skip = 0;
+                var mat_skip = Regex.Match(attributes, "skip='(.*?)'");
+                string skip_str = mat_skip.Groups[1].Value;
+                if (!string.IsNullOrEmpty(skip_str))
+                {
+                    int.TryParse(skip_str, out skip);
+                }
+
+                int take = 10;
                 var mat_take = Regex.Match(attributes, "take='(.*?)'");
                 string take_str = mat_take.Groups[1].Value;
                 if (!string.IsNullOrEmpty(take_str))
@@ -139,22 +147,48 @@ namespace v6cms.blls
                 string line_template = mat.Groups["line_template"].Value;
 
                 var article_list = _context.article.AsQueryable();
-                if (column_id_str != "all")
+                if (!string.IsNullOrEmpty(column_id_str))
+                {
+                    if (column_id_str != "all")
+                    {
+                        int.TryParse(column_id_str, out int column_id);
+                        article_list = article_list.Where(m => m.column_id == column_id);
+                    }
+                }
+                else
                 {
                     article_list = article_list.Where(m => m.column_id == article.column_id);
                 }
+
                 if (!string.IsNullOrEmpty(flag))
                 {
-                    if (flag == "recommend")
+                    if (flag.Contains("recommend"))
                     {
                         article_list = article_list.Where(m => m.is_recommend);
                     }
-                    else if (flag == "hot")
+                    if (flag.Contains("hot"))
                     {
                         article_list = article_list.Where(m => m.is_hot);
                     }
+                    if (flag.Contains("best"))
+                    {
+                        article_list = article_list.Where(m => m.is_best);
+                    }
+                    if (flag.Contains("nopic"))
+                    {
+                        article_list = article_list.Where(m => !m.is_pic);
+                    }
+                    else if (flag.Contains("pic"))
+                    {
+                        article_list = article_list.Where(m => m.is_pic && !string.IsNullOrEmpty(m.pic));
+                    }
                 }
-                article_list = article_list.Take(take).Include(m => m.column).OrderByDescending(m => m.publish_time).ThenByDescending(m => m.id);
+                article_list = article_list.Include(m => m.column).OrderByDescending(m => m.publish_time);
+                if (skip > 0)
+                {
+                    article_list = article_list.Skip(skip);
+                }
+                article_list = article_list.Take(take);
                 foreach (var item in article_list)
                 {
                     string line_temp = line_template;
@@ -167,9 +201,11 @@ namespace v6cms.blls
 
                     line_temp = line_temp.Replace("[field:column_url/]", item.column_id.to_route_url(item.column.route_value));
                     line_temp = line_temp.Replace("[field:column_name/]", item.column.column_name);
+                    line_temp = line_temp.Replace("[field:pic/]", item.pic);
                     line_temp = line_temp.Replace("[field:url/]", $"/{article_url}");
                     line_temp = line_temp.Replace("[field:fulltitle/]", item.title);
-                    line_temp = line_temp.Replace("[field:title/]", item.title.CutStr(titlelen));
+                    string title = item.title.CutStr(titlelen);
+                    line_temp = line_temp.Replace("[field:title/]", title);
                     line_temp = line_temp.Replace("[field:summary/]", item.summary);
                     link_line_value += line_temp;
                 }

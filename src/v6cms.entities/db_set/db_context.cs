@@ -10,19 +10,19 @@ namespace v6cms.entities.db_set
         //public db_context(DbContextOptions options) : base(options) { }
 
         /// <summary>
-        /// 法律咨询提问
+        /// 问答
         /// </summary>
         public DbSet<ask_entity> ask { get; set; }
 
         /// <summary>
-        /// 法律咨询答疑
+        /// 问答回复
         /// </summary>
         public DbSet<ask_reply_entity> ask_reply { get; set; }
 
         /// <summary>
-        /// 法律咨询回复
+        /// 问答点赞
         /// </summary>
-        public DbSet<ask_comment_entity> ask_comment { get; set; }
+        public DbSet<ask_up_entity> ask_up { get; set; }
 
         /// <summary>
         /// 广告

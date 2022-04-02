@@ -31,7 +31,8 @@
                 url: "/api/comment_api/post",
                 type: "post",
                 data: {
-                    article_id: "@article.id",
+                    module: "article",
+                    source_id: "@article.id",
                     password: $("#password").val(),
                     comment_content: $("#comment_content").val()
                 },

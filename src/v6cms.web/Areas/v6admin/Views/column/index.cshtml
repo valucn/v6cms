@@ -79,7 +79,6 @@
                 { key: 'id', title: '', width: '260px', align: 'right',
                     template: function(item){
                         var str = '<a href="/v6admin/column/edit/'+item.id+'">修改</a> | ';
-                        str += '<a href="/v6admin/column/edit_content/'+item.id+'">修改栏目内容</a> | ';
                         //str += '<a href="/v6admin/column/create?parent_id='+item.id+'">添加子栏目</a> | ';
                         str += '<a href="/v6admin/column/delete/'+item.id+'" onclick="return confirm(\'确认删除吗？\');">删除</a>';
                         return str;
@@ -102,8 +101,28 @@
     <div class="layui-card-header">
         @ViewData["Title"]
     </div>
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <form asp-action="search" method="get">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">关键字</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="keyword" name="keyword" placeholder="请输入" class="layui-input" value='@ViewBag.keyword' />
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="layui-card-body">
-        <a asp-action="create" class="layui-btn layui-btn-normal">添加根栏目</a>
+        <div style="padding-bottom: 10px;">
+            <a asp-action="create" class="layui-btn layui-btn-normal">添加根栏目</a>
+        </div>
         <table class="layui-table layui-form treeTable" id="tree-table"></table>
     </div>
 </div>

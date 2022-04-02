@@ -62,7 +62,8 @@ namespace v6cms.web.Areas.v6amin.Controllers
                 // 自动审核提问
                 await _context.ask.Where(m => m.id == model.ask_id).UpdateFromQueryAsync(x => new ask_entity
                 {
-                    is_review = true
+                    is_review = true,
+                    reply_status = entities.enums.reply_status_enum.新回复
                 });
                 //跳转到提问列表页
                 return RedirectToAction("index", "ask");
